@@ -21,10 +21,10 @@ public class MemberService {
     @Transactional
     public void save(MemberDTO memberDTO) {
 
-        Member member = Member.createMember(memberDTO.getM_name(), memberDTO.getM_phoneNumber(), memberDTO.getM_birth(), memberDTO.getM_loginId(),
-                memberDTO.getM_password());
-
-        memberRepository.save(member);
+//        Member member = Member.createMember(memberDTO.getM_name(), memberDTO.getM_phoneNumber(), memberDTO.getM_birth(), memberDTO.getM_loginId(),
+//                memberDTO.getM_password());
+//
+//        memberRepository.save(member);
     }
 
     /**

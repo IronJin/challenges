@@ -4,6 +4,7 @@ import challenges.challenges.controller.member.CheckLoginIdDTO;
 import challenges.challenges.controller.member.MemberDTO;
 import challenges.challenges.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -23,7 +25,7 @@ public class MemberController {
     @PostMapping("/member/new")
     public ResponseEntity<?> saveMember(@RequestBody MemberDTO memberDTO) {
         HashMap<String, String> response = new HashMap<>();
-
+        log.info("{}",memberDTO.getM_birth().toString());
         try {
             memberService.save(memberDTO);
             response.put("response", "success");

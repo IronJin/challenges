@@ -22,7 +22,8 @@ public class MemberRepository {
 
     /**
      * db에 loginId 가 존재하는지 없는지를 검사
-     * return 값은 long 형의 count 결과값값     */
+     * return 값은 long 형의 count 결과값
+     */
     public long checkId(String checkId) {
         TypedQuery<Long> query = em.createQuery("SELECT count(m) FROM Member m where m.m_loginId = :checkId", Long.class);
         query.setParameter("checkId", checkId);
