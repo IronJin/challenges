@@ -52,4 +52,11 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/member/login")
+    public ResponseEntity<?> loginMember(@RequestBody LoginDTO loginDTO) {
+
+
+        return null;
+    }
+
 }
