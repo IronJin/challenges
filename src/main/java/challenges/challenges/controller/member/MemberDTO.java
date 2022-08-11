@@ -12,7 +12,7 @@ public class MemberDTO {
 
     private String m_phoneNumber;
 
-    private Object m_birth;
+    private String m_birth;
 
     private String m_loginId;
 
