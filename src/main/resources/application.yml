@@ -5,6 +5,15 @@ spring:
     password: didcjf12
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: gra1259@naver.com
+    password: cjfwls12
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
 
   jpa:
     hibernate:

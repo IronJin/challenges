@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.swing.text.html.Option;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +33,41 @@ public class MemberRepository {
         query.setParameter("checkId", checkId);
         long count = query.getSingleResult();
         return count;
+    }
+
+    /**
+     * Id 만 가지고 멤버를 찾기
+     */
+    public Optional<Member> loginByLoginId(String loginId) {
+
+        for(Member member : findAll()){
+            if(member.getM_loginId().equals(loginId)) {
+                return Optional.of(member);
+            }
+        }
+        return Optional.empty();
+
+    }
+
+    /**
+     * 비밀번호와 아이디를 가지고 멤버를 찾기
+     */
+    public Optional<Member> loginByPassword(String loginId, String password) {
+
+        for(Member member : findAll()) {
+            if (member.getM_loginId().equals(loginId) && member.getM_password().equals(password)) {
+                return Optional.of(member);
+            }
+        }
+            return Optional.empty();
+    }
+
+
+    /**
+     * 전체회원 조회
+     */
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class).getResultList();
     }
 
 }
