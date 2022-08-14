@@ -105,7 +105,14 @@ public class MemberController {
      * 인증번호 정보는 세션에 저장
      */
     @PostMapping("/email/send")
-    public ResponseEntity<?> authEmail(@RequestBody EmailRequestDTO emailRequestDTO, HttpServletRequest request) {
+    public ResponseEntity<?> authEmail(@Valid @RequestBody EmailRequestDTO emailRequestDTO, HttpServletRequest request, BindingResult bindingResult) {
+        HashMap<String, String> map = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            map.put("response","이메일을 입력하세요");
+            return ResponseEntity.ok(map);
+        }
+
         String mailCheck = emailService.mailCheck(emailRequestDTO.getM_email());
 
         CodeDTO codeDTO = new CodeDTO();
@@ -116,19 +123,32 @@ public class MemberController {
         session.setMaxInactiveInterval(300); //5분간 유지
 
 
-        HashMap<String, String> map = new HashMap<>();
+
         map.put("response","success");
 
         return ResponseEntity.ok(map);
     }
 
 
+    /**
+     * 코드를 입력하고 확인버튼을 눌렀을 때 작동하는 코드
+     */
     @PostMapping("/email/check")
-    public ResponseEntity<?> codeCheck(@RequestBody CodeDTO codeDTO, HttpServletRequest request) {
+    public ResponseEntity<?> codeCheck(@Valid @RequestBody CodeDTO codeDTO, BindingResult bindingResult, HttpServletRequest request) {
+
+        HashMap<String, String> map = new HashMap<>();
+        //빈값이면
+        if(bindingResult.hasErrors()) {
+            map.put("response","인증코드를 입력해주세요.");
+        }
+
+
+        //이메일주소 입력창 [인증] //url : /email/send
+        //인증코드 입력창 [확인] //url : /email/check
 
         HttpSession session = request.getSession(false);
-        HashMap<String, String> map = new HashMap<>();
 
+        //세션 만료 5분 지났을때 동작
         if(session == null) {
             map.put("response","인증번호를 먼저 보내야 합니다.");
             return ResponseEntity.ok(map);
@@ -136,6 +156,7 @@ public class MemberController {
 
 
         //이메일로 보낸 인증코드
+        //세션에 저장된 인증코드
         CodeDTO sessionCode = (CodeDTO) session.getAttribute("code");
 
         if(sessionCode == null) {
@@ -143,6 +164,7 @@ public class MemberController {
             return ResponseEntity.ok(map);
         }
 
+        //세션에 저장된 코드와 입력코드가 다르면 인증코드가 틀립니다 return 해줌
         if(!sessionCode.getCode().equals(codeDTO.getCode())) {
             map.put("response","인증코드가 틀립니다.");
             return ResponseEntity.ok(map);
