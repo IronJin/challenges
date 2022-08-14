@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -27,14 +29,22 @@ public class MemberController {
      * 회원가입 컨트롤러
      */
     @PostMapping("/member/new")
-    public ResponseEntity<?> saveMember(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<?> saveMember(@Valid @RequestBody MemberDTO memberDTO, BindingResult bindingResult) {
         HashMap<String, String> response = new HashMap<>();
         //log.info("{}",memberDTO.getM_birth().toString());
         try {
+
+            if(bindingResult.hasErrors()) {
+                response.put("response","fail");
+                return ResponseEntity.ok(response);
+            }
+
             memberService.save(memberDTO);
             response.put("response", "success");
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.info("여기서 발생");
             response.put("response", "fail");
             return ResponseEntity.ok(response);
         }
