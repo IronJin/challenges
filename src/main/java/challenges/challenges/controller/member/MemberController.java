@@ -17,6 +17,15 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Optional;
 
+
+/**
+ * 최종 수정일 2022-08-14
+ * 회원가입 로직 (완료)
+ * 회원가입시 이메일 인증코드 구현 (완료)
+ * 로그인 시 세션에 값 저장하는것 (완료)
+ * 로그아웃 구현 (완료)
+ */
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -174,6 +183,20 @@ public class MemberController {
         map.put("response","이메일 인증에 성공했습니다.");
         session.invalidate(); //세션을 지워줌
         return ResponseEntity.ok(map);
+    }
+
+    //로그아웃 로직
+    //동작 방식 : 세션을 지워줌
+    @PostMapping("/member/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
+        response.put("response","success");
+        return ResponseEntity.ok(response);
     }
 
 }

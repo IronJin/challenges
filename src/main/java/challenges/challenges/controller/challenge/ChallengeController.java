@@ -19,6 +19,12 @@ import javax.validation.Valid;
 import java.util.HashMap;
 
 
+/**
+ * 마지막 수정일 2022-08-14
+ * 챌린지 생성하는 로직 구현 (완료)
+ * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (미완료)
+ */
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -62,7 +68,7 @@ public class ChallengeController {
          * 챌린지를 정상적으로 생성해준다.
          */
         challengeService.ChallengeSave(challengeDTO.getC_detail(), challengeDTO.getC_donation_destination(), challengeDTO.getC_endTime(), loginMember);
-        response.put("response", "성공적으로 챌린지를 생성하였습니다.");
+        response.put("response", "success");
         return ResponseEntity.ok(response);
     }
 
