@@ -1,4 +1,4 @@
-package challenges.challenges.service;
+package challenges.challenges.service.member;
 
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

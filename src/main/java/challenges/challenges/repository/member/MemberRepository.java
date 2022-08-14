@@ -1,4 +1,4 @@
-package challenges.challenges.repository;
+package challenges.challenges.repository.member;
 
 import challenges.challenges.domain.Member;
 import lombok.RequiredArgsConstructor;

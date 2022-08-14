@@ -1,14 +1,13 @@
-package challenges.challenges.service;
+package challenges.challenges.service.member;
 
 import challenges.challenges.controller.member.CheckLoginIdDTO;
 import challenges.challenges.controller.member.MemberDTO;
 import challenges.challenges.domain.Member;
-import challenges.challenges.repository.MemberRepository;
+import challenges.challenges.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service

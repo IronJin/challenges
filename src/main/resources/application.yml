@@ -8,8 +8,8 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: 네이버 아이디
-    password: 네이버 비밀번호
+    username: gra1259
+    password: didcjf12!
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true

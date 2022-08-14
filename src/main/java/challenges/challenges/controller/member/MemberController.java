@@ -1,8 +1,8 @@
 package challenges.challenges.controller.member;
 
 import challenges.challenges.domain.Member;
-import challenges.challenges.service.EmailService;
-import challenges.challenges.service.MemberService;
+import challenges.challenges.service.member.EmailService;
+import challenges.challenges.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -70,6 +70,7 @@ public class MemberController {
             response.put("response","id");
             return ResponseEntity.ok(response);
         }
+
         //비밀번호가 맞는지를 확인
         Optional<Member> findMemberByPassword = memberService.loginByPassword(loginDTO.getM_loginId(), loginDTO.getM_password());
         if(findMemberByPassword.isEmpty()) {
@@ -90,14 +91,57 @@ public class MemberController {
     }
 
     /**
-     * Email 정보를 받으면 Email 과 리액트에 인증번호를 보냄
+     * Email 정보를 받으면 Email 에 인증번호를 보내고 세션에 인증코드를 저장해서 나중에 비교할거임
+     * 인증번호 정보는 세션에 저장
      */
-    @PostMapping("/email/check")
-    public ResponseEntity<?> authEmail(@RequestBody EmailRequestDTO emailRequestDTO) {
+    @PostMapping("/email/send")
+    public ResponseEntity<?> authEmail(@RequestBody EmailRequestDTO emailRequestDTO, HttpServletRequest request) {
         String mailCheck = emailService.mailCheck(emailRequestDTO.getM_email());
-        HashMap<String, String> response = new HashMap<>();
-        response.put("response",mailCheck);
-        return ResponseEntity.ok(response);
+
+        CodeDTO codeDTO = new CodeDTO();
+        codeDTO.setCode(mailCheck); // 전달형식은 다음과 같다. {"code" : "인증코드번호"}
+
+        HttpSession session = request.getSession();
+        session.setAttribute("code",codeDTO);
+        session.setMaxInactiveInterval(300); //5분간 유지
+
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("response","success");
+
+        return ResponseEntity.ok(map);
+    }
+
+
+    @PostMapping("/email/check")
+    public ResponseEntity<?> codeCheck(@RequestBody CodeDTO codeDTO, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        HashMap<String, String> map = new HashMap<>();
+
+        if(session == null) {
+            map.put("response","인증번호를 먼저 보내야 합니다.");
+            return ResponseEntity.ok(map);
+        }
+
+
+        //이메일로 보낸 인증코드
+        CodeDTO sessionCode = (CodeDTO) session.getAttribute("code");
+
+        if(sessionCode == null) {
+            map.put("response","시간 초과등의 문제가 발생했습니다.");
+            return ResponseEntity.ok(map);
+        }
+
+        if(!sessionCode.getCode().equals(codeDTO.getCode())) {
+            map.put("response","인증코드가 틀립니다.");
+            return ResponseEntity.ok(map);
+        }
+
+        //성공 로직
+        map.put("response","이메일 인증에 성공했습니다.");
+        session.invalidate(); //세션을 지워줌
+        return ResponseEntity.ok(map);
     }
 
 }
