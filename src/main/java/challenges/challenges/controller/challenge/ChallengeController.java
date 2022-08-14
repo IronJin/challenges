@@ -1,43 +1,67 @@
 package challenges.challenges.controller.challenge;
 
-import challenges.challenges.domain.Challenge;
+import challenges.challenges.controller.member.SessionConst;
 import challenges.challenges.domain.Member;
 import challenges.challenges.service.challenge.ChallengeService;
-import challenges.challenges.service.member.MemberService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Optional;
+
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class ChallengeController {
 
-    private final MemberService memberService;
     private final ChallengeService challengeService;
 
     @PostMapping("challenge/new")
-    public ResponseEntity<?> createChallenge(@Valid @RequestBody ChallengeDTO challengeDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> createChallenge(@Valid @RequestBody ChallengeDTO challengeDTO, BindingResult bindingResult, HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
 
-        if(bindingResult.hasErrors()) {
-            response.put("response","빈 값이 존재합니다.");
+        //세션에 값이 저장되어있는지 확인 (로그인이 되어 있는지를 확인하는 로직)
+        HttpSession session = request.getSession(false);
+
+        //세션이 없으므로 로그인이 안되어 있다는 이야기 이다.
+        if(session == null) {
+            response.put("response","fail");
             return ResponseEntity.ok(response);
         }
 
-        Optional<Member> findMemberByLoginId = memberService.findByLoginId(challengeDTO.getM_loginId());
-        Member member = findMemberByLoginId.get();
-        challengeService.ChallengeSave(challengeDTO.getC_detail(), challengeDTO.getC_donation_destination(), challengeDTO.getC_endTime(), member);
+        //세션에서 로그인된 Member 객체를 꺼내옴
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
+        //세션에서 꺼낸 로그인 멤버가 빈값일 경우
+        if(loginMember == null) {
+            response.put("response","fail");
+            return ResponseEntity.ok(response);
+        }
+
+
+        //사용자가 입력한 값중에 빈값이 존재하는 경우
+        if(bindingResult.hasErrors()) {
+            response.put("response","inputFail");
+            return ResponseEntity.ok(response);
+        }
+
+
+        /**
+         * 여기서부터는 성공로직
+         * 챌린지를 정상적으로 생성해준다.
+         */
+        challengeService.ChallengeSave(challengeDTO.getC_detail(), challengeDTO.getC_donation_destination(), challengeDTO.getC_endTime(), loginMember);
         response.put("response", "성공적으로 챌린지를 생성하였습니다.");
         return ResponseEntity.ok(response);
     }
