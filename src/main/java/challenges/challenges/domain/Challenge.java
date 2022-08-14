@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,19 +22,22 @@ public class Challenge {
     //총 챌린지 참여자수
     private int c_challengers;
 
-    private LocalDateTime c_startTime;
+    private LocalDate c_startTime;
 
-    private LocalDateTime c_endTime;
+    private LocalDate c_endTime;
 
     //기부처
-    @Enumerated(EnumType.STRING)
-    private Donation_Destination c_donation_destination;
+    //리액트에서 따로 리스트를 정해줘서 거기서만 값을 넘기도록 설정해주어야함
+    private String c_donation_destination;
 
     //설명
     private String c_detail;
 
     //추천수
     private int c_recommendation;
+
+    @Enumerated(EnumType.STRING)
+    private State state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -47,7 +51,7 @@ public class Challenge {
     @OneToMany(mappedBy = "pc_challenge", cascade = CascadeType.ALL)
     private List<ParticipantChallenge> participantChallengeList = new ArrayList<>();
 
-    public static Challenge createChallenge(String c_detail, Donation_Destination c_donation_destination, LocalDateTime c_endTime, Member member) {
+    public static Challenge createChallenge(String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
 
         Challenge challenge = new Challenge();
 
@@ -56,9 +60,10 @@ public class Challenge {
         challenge.setC_endTime(c_endTime);
         challenge.setC_price(0L);
         challenge.setMember(member);
-        challenge.setC_startTime(LocalDateTime.now());
+        challenge.setC_startTime(LocalDate.now());
         challenge.setParticipantChallengeList(new ArrayList<>());
         challenge.setC_donation_destination(c_donation_destination);
+        challenge.setState(State.PROCEED);
         //challenge.setReplyList(new ArrayList<>());
         return challenge;
     }

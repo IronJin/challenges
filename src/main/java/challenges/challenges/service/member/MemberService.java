@@ -41,7 +41,7 @@ public class MemberService {
     /**
      * LoginId 로 Member 를 찾기
      */
-    public Optional<Member> loginByLoginId(String loginId) {
+    public Optional<Member> findByLoginId(String loginId) {
         Optional<Member> findMember = memberRepository.loginByLoginId(loginId);
         return findMember;
     }
@@ -49,7 +49,7 @@ public class MemberService {
     /**
      * LoginId 와 Password 로 Id 찾기
      */
-    public Optional<Member> loginByPassword(String loginId, String password) {
+    public Optional<Member> findByPassword(String loginId, String password) {
         Optional<Member> findMember = memberRepository.loginByPassword(loginId, password);
         return findMember;
     }

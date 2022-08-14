@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,7 +34,7 @@ public class Member {
     private String m_password;
 
     @Column(nullable = false)
-    private LocalDateTime m_createTime;
+    private LocalDate m_createTime;
 
     public static Member createMember(String m_name, String m_phoneNumber, String m_birth, String m_loginId, String m_password) {
         Member member = new Member();
@@ -43,7 +44,7 @@ public class Member {
         member.setM_name(m_name);
         member.setM_password(m_password);
         member.setM_phoneNumber(m_phoneNumber);
-        member.setM_createTime(LocalDateTime.now());
+        member.setM_createTime(LocalDate.now());
 
         return member;
     }

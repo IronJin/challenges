@@ -36,7 +36,7 @@ public class MemberRepository {
     }
 
     /**
-     * Id 만 가지고 멤버를 찾기
+     * loginId 만 가지고 멤버를 찾기
      */
     public Optional<Member> loginByLoginId(String loginId) {
 

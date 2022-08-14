@@ -74,7 +74,7 @@ public class MemberController {
 
         HashMap<String, String> response = new HashMap<>();
         //Id 가 존재하는지를 확인
-        Optional<Member> findMemberById = memberService.loginByLoginId(loginDTO.getM_loginId());
+        Optional<Member> findMemberById = memberService.findByLoginId(loginDTO.getM_loginId());
 
         if(findMemberById.isEmpty()) {
             response.put("response","id");
@@ -82,7 +82,7 @@ public class MemberController {
         }
 
         //비밀번호가 맞는지를 확인
-        Optional<Member> findMemberByPassword = memberService.loginByPassword(loginDTO.getM_loginId(), loginDTO.getM_password());
+        Optional<Member> findMemberByPassword = memberService.findByPassword(loginDTO.getM_loginId(), loginDTO.getM_password());
         if(findMemberByPassword.isEmpty()) {
             response.put("response", "password");
             return ResponseEntity.ok(response);
