@@ -11,12 +11,15 @@ import java.time.LocalDate;
 public class ChallengeDTO {
 
     @NotEmpty
+    private String c_title;
+
+    @NotEmpty
     private String c_detail;
 
+    //기부할 단체
     @NotEmpty
     private String c_donation_destination;
 
-    //기부처까지 설정을 해주어야함
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate c_endTime;
 }

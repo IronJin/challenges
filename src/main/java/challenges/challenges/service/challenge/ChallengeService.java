@@ -4,12 +4,14 @@ import challenges.challenges.controller.challenge.ChallengeDTO;
 import challenges.challenges.controller.member.MemberDTO;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
+import challenges.challenges.domain.State;
 import challenges.challenges.repository.challenge.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,26 @@ public class ChallengeService {
      * 챌린지
      */
     @Transactional
-    public void ChallengeSave(String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
+    public void ChallengeSave(String c_title ,String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
 
-        Challenge challenge = Challenge.createChallenge(c_detail,c_donation_destination,c_endTime,member);
+        Challenge challenge = Challenge.createChallenge(c_title, c_detail,c_donation_destination,c_endTime,member);
         challengeRepository.ChallengeSave(challenge);
 
+    }
+
+    /**
+     * 챌린지에서 모든 정보를 찾고 챌린지의 endTime 과 현재 날짜가 일치하면 챌린지의 상태를 END 로 바꿔주는 로직
+     */
+    @Transactional
+    public void ChallengeStateChange() {
+        List<Challenge> challengeList = challengeRepository.findAll();
+        for (Challenge challenge : challengeList) {
+
+            if(challenge.getC_endTime().equals(LocalDate.now())) {
+                challenge.setC_state(State.END);
+            }
+
+        }
     }
 
 }

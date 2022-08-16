@@ -17,6 +17,8 @@ public class Challenge {
     @Column(name = "challenge_id")
     private Long id;
 
+    private String c_title;
+
     private Long c_price;
 
     //총 챌린지 참여자수
@@ -37,7 +39,7 @@ public class Challenge {
     private int c_recommendation;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private State c_state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -51,7 +53,7 @@ public class Challenge {
     @OneToMany(mappedBy = "pc_challenge", cascade = CascadeType.ALL)
     private List<ParticipantChallenge> participantChallengeList = new ArrayList<>();
 
-    public static Challenge createChallenge(String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
+    public static Challenge createChallenge(String c_title ,String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
 
         Challenge challenge = new Challenge();
 
@@ -63,7 +65,8 @@ public class Challenge {
         challenge.setC_startTime(LocalDate.now());
         challenge.setParticipantChallengeList(new ArrayList<>());
         challenge.setC_donation_destination(c_donation_destination);
-        challenge.setState(State.PROCEED);
+        challenge.setC_state(State.PROCEED);
+        challenge.setC_title(c_title);
         //challenge.setReplyList(new ArrayList<>());
         return challenge;
     }
