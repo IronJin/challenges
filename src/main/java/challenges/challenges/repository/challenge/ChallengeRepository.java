@@ -27,6 +27,10 @@ public class ChallengeRepository {
         return em.createQuery("select c from Challenge c where c.c_state = 'PROCEED' ", Challenge.class).getResultList();
     }
 
+    public Challenge findById(Long id) {
+        return em.find(Challenge.class, id);
+    }
+
 
 
 }

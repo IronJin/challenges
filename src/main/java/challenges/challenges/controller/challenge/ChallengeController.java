@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -99,6 +100,16 @@ public class ChallengeController {
         List<Challenge> challengeList = challengeService.ChallengeList();
         return ResponseEntity.ok(challengeList);
     }
+
+    /**
+     * 특정 챌린지를 생성한 멤버의 간단한 로그인 정보를 주는 메소드
+     */
+    @GetMapping("/challenge/{id}")
+    public ResponseEntity<CreateChallengeMember> challenge(@PathVariable Long id) {
+        CreateChallengeMember createChallengeMemberInfo = challengeService.createChallengeMemberInfo(id);
+        return ResponseEntity.ok(createChallengeMemberInfo);
+    }
+
 
 
 }

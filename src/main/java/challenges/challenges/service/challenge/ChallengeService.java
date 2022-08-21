@@ -1,7 +1,6 @@
 package challenges.challenges.service.challenge;
 
-import challenges.challenges.controller.challenge.ChallengeDTO;
-import challenges.challenges.controller.member.MemberDTO;
+import challenges.challenges.controller.challenge.CreateChallengeMember;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.domain.State;
@@ -48,6 +47,15 @@ public class ChallengeService {
 
     public List<Challenge> ChallengeList() {
         return challengeRepository.findAll();
+    }
+
+    public CreateChallengeMember createChallengeMemberInfo(Long id) {
+        Challenge challenge = challengeRepository.findById(id);
+        Member member = challenge.getMember();
+        CreateChallengeMember createChallengeMember = new CreateChallengeMember();
+        createChallengeMember.setM_name(member.getM_name());
+        createChallengeMember.setM_loginId(member.getM_loginId());
+        return createChallengeMember;
     }
 
 
