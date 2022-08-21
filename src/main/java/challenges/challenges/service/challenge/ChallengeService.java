@@ -46,4 +46,10 @@ public class ChallengeService {
         }
     }
 
+    public List<Challenge> ChallengeList() {
+        return challengeRepository.findAll();
+    }
+
+
+
 }

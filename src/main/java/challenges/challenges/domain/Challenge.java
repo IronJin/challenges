@@ -1,11 +1,12 @@
 package challenges.challenges.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class Challenge {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member member;
 
     //챌린지 삭제시 댓글도 모두 삭제

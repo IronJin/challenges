@@ -1,6 +1,7 @@
 package challenges.challenges.controller.challenge;
 
 import challenges.challenges.controller.member.SessionConst;
+import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.service.challenge.ChallengeService;
 
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,12 +21,13 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
- * 마지막 수정일 2022-08-14
+ * 마지막 수정일 2022-08-21
  * 챌린지 생성하는 로직 구현 (완료)
- * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (미완료)
+ * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (완료)
  */
 
 @Controller
@@ -86,6 +89,15 @@ public class ChallengeController {
     @Scheduled(cron = "0 0 0 * * *")
     public void changeChallengeSchedule() {
         challengeService.ChallengeStateChange();
+    }
+
+    /**
+     * PROCEED 상태인 챌린지들을 보내주는 메소드
+     */
+    @GetMapping("/challenge/list")
+    public ResponseEntity<List<Challenge>> challengeList() {
+        List<Challenge> challengeList = challengeService.ChallengeList();
+        return ResponseEntity.ok(challengeList);
     }
 
 

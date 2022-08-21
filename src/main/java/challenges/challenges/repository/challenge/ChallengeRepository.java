@@ -23,9 +23,10 @@ public class ChallengeRepository {
     /**
      * 모든 챌린지 정보 조회
      */
-
     public List<Challenge> findAll() {
         return em.createQuery("select c from Challenge c where c.c_state = 'PROCEED' ", Challenge.class).getResultList();
     }
+
+
 
 }

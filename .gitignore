@@ -19,7 +19,6 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
-.gitignore
 *.iws
 *.iml
 *.ipr
@@ -36,6 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-application.yml
-
