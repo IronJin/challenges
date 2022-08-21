@@ -58,6 +58,10 @@ public class ChallengeService {
         return createChallengeMember;
     }
 
+    public Challenge findOne(Long id) {
+        return challengeRepository.findById(id);
+    }
+
 
 
 }
