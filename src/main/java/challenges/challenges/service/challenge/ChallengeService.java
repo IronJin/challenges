@@ -45,10 +45,12 @@ public class ChallengeService {
         }
     }
 
+    //조회
     public List<Challenge> ChallengeList() {
         return challengeRepository.findAll();
     }
 
+    //조회
     public CreateChallengeMember createChallengeMemberInfo(Long id) {
         Challenge challenge = challengeRepository.findById(id);
         Member member = challenge.getMember();
@@ -58,8 +60,15 @@ public class ChallengeService {
         return createChallengeMember;
     }
 
+    //조회
     public Challenge findOne(Long id) {
         return challengeRepository.findById(id);
+    }
+
+    //DB 변경
+    @Transactional
+    public void deleteChallenge(Challenge challenge) {
+        challengeRepository.deleteById(challenge.getId());
     }
 
 

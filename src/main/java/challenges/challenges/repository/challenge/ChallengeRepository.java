@@ -31,6 +31,11 @@ public class ChallengeRepository {
         return em.find(Challenge.class, id);
     }
 
+    public void deleteById(Long id) {
+        Challenge findChallenge = findById(id);
+        em.remove(findChallenge);
+    }
+
 
 
 }

@@ -29,6 +29,8 @@ import java.util.List;
  * 마지막 수정일 2022-08-21
  * 챌린지 생성하는 로직 구현 (완료)
  * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (완료)
+ * 챌린지 수정하기(미완료)
+ * 챌린지 삭제하기(미완료)
  */
 
 @Controller
@@ -92,6 +94,7 @@ public class ChallengeController {
         challengeService.ChallengeStateChange();
     }
 
+
     /**
      * PROCEED 상태인 챌린지들을 보내주는 메소드
      */
@@ -108,6 +111,42 @@ public class ChallengeController {
     public ResponseEntity<CreateChallengeMember> challenge(@PathVariable Long id) {
         CreateChallengeMember createChallengeMemberInfo = challengeService.createChallengeMemberInfo(id);
         return ResponseEntity.ok(createChallengeMemberInfo);
+    }
+
+    /**
+     * 챌린지 삭제하기 메서드
+     * 세션에 있는 값을 조회하고 세션에 있는 로그인 멤버와 챌린지를 생성한 멤버의 정보가 같다면 삭제를 해주고 나머지는 실패이다.
+     */
+    @PostMapping("/challenge/{id}/delete")
+    public ResponseEntity<?> deleteChallenge(@PathVariable Long id, HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            response.put("response","로그인을 해야합니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Challenge challenge = challengeService.findOne(id);
+        log.info("challenge loginid ={}",challenge.getMember().getM_loginId());
+        log.info("loginMember loginId={}",loginMember.getM_loginId());
+        if(!challenge.getMember().getM_loginId().equals(loginMember.getM_loginId())) {
+            response.put("response","해당 챌린지를 삭제할 수 있는 권한이 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //여기서부터는 성공로직
+        challengeService.deleteChallenge(challenge);
+        response.put("response","success");
+        return ResponseEntity.ok(response);
     }
 
 
