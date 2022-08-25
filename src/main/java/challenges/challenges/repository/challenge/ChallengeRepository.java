@@ -1,5 +1,6 @@
 package challenges.challenges.repository.challenge;
 
+import challenges.challenges.controller.challenge.UpdateChallengeDTO;
 import challenges.challenges.domain.Challenge;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -34,6 +35,12 @@ public class ChallengeRepository {
     public void deleteById(Long id) {
         Challenge findChallenge = findById(id);
         em.remove(findChallenge);
+    }
+
+    public void update(Long id, UpdateChallengeDTO updateChallengeDTO) {
+        Challenge findChallenge = em.find(Challenge.class, id);
+        findChallenge.setC_title(updateChallengeDTO.getC_title());
+        findChallenge.setC_detail(updateChallengeDTO.getC_detail());
     }
 
 

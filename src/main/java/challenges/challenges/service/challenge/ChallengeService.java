@@ -1,6 +1,7 @@
 package challenges.challenges.service.challenge;
 
 import challenges.challenges.controller.challenge.CreateChallengeMember;
+import challenges.challenges.controller.challenge.UpdateChallengeDTO;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.domain.State;
@@ -69,6 +70,12 @@ public class ChallengeService {
     @Transactional
     public void deleteChallenge(Challenge challenge) {
         challengeRepository.deleteById(challenge.getId());
+    }
+
+    //DB 변경 - update 로직
+    @Transactional
+    public void updateChallenge(Long id, UpdateChallengeDTO updateChallengeDTO) {
+        challengeRepository.update(id, updateChallengeDTO);
     }
 
 

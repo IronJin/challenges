@@ -30,7 +30,10 @@ import java.util.List;
  * 챌린지 생성하는 로직 구현 (완료)
  * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (완료)
  * 챌린지 수정하기(미완료)
- * 챌린지 삭제하기(미완료)
+ * 마이페이지에서 내가 만든 챌린지 리스트 조회하기(미완료)
+ * 챌린지 삭제하기(완료)
+ * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
+ * 마이페이지에서 내가 참여한 챌린지 조회(미완료)
  */
 
 @Controller
@@ -124,6 +127,85 @@ public class ChallengeController {
     }
 
     /**
+     * 로그인 정보랑 챌린지를 만든 멤버의 정보가 일치하면 1을주고 일치하지 않으면 0을 준다.
+     * 프론트엔드에서는 1일경우 버튼을 띄워주고 0일경우 버튼을 띄워주면 안된다.
+     */
+    @PostMapping("/challenge/{id}/equal")
+    public ResponseEntity<?> challengeEqual(@PathVariable Long id, HttpServletRequest request) {
+
+        HashMap<String, Integer> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+
+        //로그인을 하지 않으면 띄워주지 않음
+        if(session == null) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+
+        //세션이 만료된 경우가 있을수 있으므로 이러한 경우에도 버튼을 띄워주지 않음
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+
+        //로그인 정보랑 일치하는지를 확인해야함
+        //일치하지 않으면 0을 줌
+        CreateChallengeMember challengeMemberInfo = challengeService.createChallengeMemberInfo(id);
+        if(!challengeMemberInfo.getM_loginId().equals(loginMember.getM_loginId())) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+
+        //여기서부터는 성공로직
+        response.put("response",1);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 수정폼을 나한테 보냈을 때
+     */
+    @PostMapping("challenge/{id}/update")
+    public ResponseEntity<?> updateChallenge(@PathVariable Long id, @Valid @RequestBody UpdateChallengeDTO updateChallengeDTO, BindingResult bindingResult , HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        //빈값이 있을때 오류 보내주기
+        if(bindingResult.hasErrors()) {
+            response.put("response","빈값이 있습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //세션에서 문제가 발생했을때 오류메세지 보내주기
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            response.put("response","로그인을 해주세요.");
+            return ResponseEntity.ok(response);
+        }
+
+        //세션 만료
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        //로그인 정보와 일치해야함
+        CreateChallengeMember challengeMemberInfo = challengeService.createChallengeMemberInfo(id);
+        if(!challengeMemberInfo.getM_loginId().equals(loginMember.getM_loginId())) {
+            response.put("response","권한이 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //성공 로직 - 제목과 상세설명만을 바꿔주는 로직 실행
+        challengeService.updateChallenge(id, updateChallengeDTO);
+        response.put("response","성공적으로 변경되었습니다.");
+        return ResponseEntity.ok(response);
+
+    }
+
+    /**
      * 챌린지 삭제하기 메서드
      * 세션에 있는 값을 조회하고 세션에 있는 로그인 멤버와 챌린지를 생성한 멤버의 정보가 같다면 삭제를 해주고 나머지는 실패이다.
      */
@@ -158,6 +240,15 @@ public class ChallengeController {
         response.put("response","success");
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 내가 만든 챌린지 리스트 조회하기
+     */
+
+    /**
+     * 챌린지 수정하기
+     * 제목이랑 detail 만 수정이 가능함
+     */
 
 
 }
