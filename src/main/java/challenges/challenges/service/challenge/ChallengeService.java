@@ -78,6 +78,10 @@ public class ChallengeService {
         challengeRepository.update(id, updateChallengeDTO);
     }
 
+    public List<Challenge> findChallengesByMemberId(Member loginMember){
+        List<Challenge> challengeList = challengeRepository.findChallengesByMemberId(loginMember);
+        return challengeList;
+    }
 
 
 }

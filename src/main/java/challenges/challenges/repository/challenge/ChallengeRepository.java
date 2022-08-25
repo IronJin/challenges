@@ -2,10 +2,12 @@ package challenges.challenges.repository.challenge;
 
 import challenges.challenges.controller.challenge.UpdateChallengeDTO;
 import challenges.challenges.domain.Challenge;
+import challenges.challenges.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.*;
 
 @Repository
@@ -43,6 +45,15 @@ public class ChallengeRepository {
         findChallenge.setC_detail(updateChallengeDTO.getC_detail());
     }
 
+    /**
+     * 멤버를 가지고 챌린지 리스트 뽑아내기
+     */
+    public List<Challenge> findChallengesByMemberId(Member loginMember) {
+        TypedQuery<Challenge> query = em.createQuery("SELECT c FROM Challenge c where c.member = :member", Challenge.class);
+        query.setParameter("member", loginMember);
+        List<Challenge> challengeList = query.getResultList();
+        return challengeList;
+    }
 
 
 }

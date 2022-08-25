@@ -26,14 +26,23 @@ import java.util.List;
 
 
 /**
- * 마지막 수정일 2022-08-21
+ * 마지막 수정일 2022-08-25
+ * 작성자 : 양철진
+ **/
+
+/** TO DO LIST
+
  * 챌린지 생성하는 로직 구현 (완료)
  * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (완료)
- * 챌린지 수정하기(미완료)
+ * 챌린지 수정하기(완료)
  * 마이페이지에서 내가 만든 챌린지 리스트 조회하기(미완료)
  * 챌린지 삭제하기(완료)
  * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
  * 마이페이지에서 내가 참여한 챌린지 조회(미완료)
+ * 댓글 달기(미완료)
+ * 좋아요 버튼 구성해서 값 올려주기(미완료)
+ * 회원탈퇴(미완료)
+ * 마이페이지에서 내 정보 수정하기(미완료)
  */
 
 @Controller
@@ -43,7 +52,7 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
 
-    @PostMapping("challenge/new")
+    @PostMapping("/challenge/new")
     public ResponseEntity<?> createChallenge(@Valid @RequestBody ChallengeDTO challengeDTO, BindingResult bindingResult, HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
@@ -164,9 +173,10 @@ public class ChallengeController {
     }
 
     /**
-     * 수정폼을 나한테 보냈을 때
+     * 챌린지 수정하기
+     * 제목이랑 상세설명만 수정할 수 있음.
      */
-    @PostMapping("challenge/{id}/update")
+    @PostMapping("/challenge/{id}/update")
     public ResponseEntity<?> updateChallenge(@PathVariable Long id, @Valid @RequestBody UpdateChallengeDTO updateChallengeDTO, BindingResult bindingResult , HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
@@ -243,12 +253,32 @@ public class ChallengeController {
 
     /**
      * 내가 만든 챌린지 리스트 조회하기
+     * 로그인 멤버를 통해 내가 만든 챌린지 리스트 꺼내오기
      */
+    @GetMapping("/mypage/challenges/create")
+    public ResponseEntity<List<Challenge>> getCreateChallengeList(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        List<Challenge> challengeList = challengeService.findChallengesByMemberId(loginMember);
+
+        return ResponseEntity.ok(challengeList);
+    }
 
     /**
-     * 챌린지 수정하기
-     * 제목이랑 detail 만 수정이 가능함
+     * 내가 참여한 챌린지 리스트 조회
+     * 로그인 멤버 정보를 받아오고 participantChallenge 테이블에 값이 있는지 확인 하고 그 리스트들을 리턴해주면됨
      */
+
+
 
 
 }
