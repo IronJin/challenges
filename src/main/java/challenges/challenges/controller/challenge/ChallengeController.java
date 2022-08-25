@@ -106,11 +106,21 @@ public class ChallengeController {
 
     /**
      * 특정 챌린지를 생성한 멤버의 간단한 로그인 정보를 주는 메소드
+     * 추가적으로 챌린지 정보도 함께 넘겨주어야함
      */
-    @GetMapping("/challenge/{id}")
-    public ResponseEntity<CreateChallengeMember> challenge(@PathVariable Long id) {
+    @GetMapping("/challenge/{id}/member")
+    public ResponseEntity<CreateChallengeMember> challengeMember(@PathVariable Long id) {
         CreateChallengeMember createChallengeMemberInfo = challengeService.createChallengeMemberInfo(id);
         return ResponseEntity.ok(createChallengeMemberInfo);
+    }
+
+    /**
+     * 리스트에서 특정 챌린지를 클릭했을때 그 챌린지에 대한 정보 주기
+     */
+    @GetMapping("/challenge/{id}")
+    public ResponseEntity<Challenge> challenge(@PathVariable Long id) {
+        Challenge findChallenge = challengeService.findOne(id);
+        return ResponseEntity.ok(findChallenge);
     }
 
     /**
@@ -136,8 +146,8 @@ public class ChallengeController {
         }
 
         Challenge challenge = challengeService.findOne(id);
-        log.info("challenge loginid ={}",challenge.getMember().getM_loginId());
-        log.info("loginMember loginId={}",loginMember.getM_loginId());
+        //log.info("challenge loginid ={}",challenge.getMember().getM_loginId());
+        //log.info("loginMember loginId={}",loginMember.getM_loginId());
         if(!challenge.getMember().getM_loginId().equals(loginMember.getM_loginId())) {
             response.put("response","해당 챌린지를 삭제할 수 있는 권한이 없습니다.");
             return ResponseEntity.ok(response);
@@ -148,7 +158,6 @@ public class ChallengeController {
         response.put("response","success");
         return ResponseEntity.ok(response);
     }
-
 
 
 }
