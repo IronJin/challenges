@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import java.util.*;
+
 @Repository
 @RequiredArgsConstructor
 public class ParticipantRepository {
@@ -25,6 +27,13 @@ public class ParticipantRepository {
         query.setParameter("challenge",challenge);
         long count = query.getSingleResult();
         return count;
+    }
+
+    public List<ParticipantChallenge> findParticipantListByMember(Member member) {
+        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT pc FROM ParticipantChallenge pc WHERE pc.pc_member = :member", ParticipantChallenge.class);
+        query.setParameter("member", member);
+        List<ParticipantChallenge> participantChallengeList = query.getResultList();
+        return participantChallengeList;
     }
 
 

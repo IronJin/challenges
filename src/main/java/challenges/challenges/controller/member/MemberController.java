@@ -199,4 +199,6 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    //--------------------------------------------------------------------------------------22-08-25 완료
+
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,6 +30,10 @@ public class ParticipantService {
         return count;
     }
 
+    public List<ParticipantChallenge> findParticipantListByMember(Member loginMember){
+        List<ParticipantChallenge> participantChallengeList = participantRepository.findParticipantListByMember(loginMember);
+        return participantChallengeList;
+    }
 
 
 }

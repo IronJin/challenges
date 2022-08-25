@@ -1,6 +1,7 @@
 package challenges.challenges.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,11 +49,13 @@ public class Challenge {
     private Member member;
 
     //챌린지 삭제시 댓글도 모두 삭제
-    @OneToMany(mappedBy = "r_challenge", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "r_challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Reply> replyList = new ArrayList<>();
 
     //챌린지 삭제시 참여 챌린지 모두 삭제
-    @OneToMany(mappedBy = "pc_challenge", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pc_challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ParticipantChallenge> participantChallengeList = new ArrayList<>();
 
     public static Challenge createChallenge(String c_title ,String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {

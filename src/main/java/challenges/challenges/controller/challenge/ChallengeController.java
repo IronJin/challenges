@@ -3,8 +3,10 @@ package challenges.challenges.controller.challenge;
 import challenges.challenges.controller.member.SessionConst;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
+import challenges.challenges.domain.ParticipantChallenge;
 import challenges.challenges.service.challenge.ChallengeService;
 
+import challenges.challenges.service.participant_challenge.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +54,9 @@ import java.util.List;
 public class ChallengeController {
 
     private final ChallengeService challengeService;
+    private final ParticipantService participantService;
 
+    //완료
     @PostMapping("/challenge/new")
     public ResponseEntity<?> createChallenge(@Valid @RequestBody ChallengeDTO challengeDTO, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -110,6 +115,7 @@ public class ChallengeController {
     /**
      * PROCEED 상태인 챌린지들을 보내주는 메소드
      */
+    //완료
     @GetMapping("/challenge/list")
     public ResponseEntity<List<Challenge>> challengeList() {
         List<Challenge> challengeList = challengeService.ChallengeList();
@@ -120,6 +126,7 @@ public class ChallengeController {
      * 특정 챌린지를 생성한 멤버의 간단한 로그인 정보를 주는 메소드
      * 추가적으로 챌린지 정보도 함께 넘겨주어야함
      */
+    //완료
     @GetMapping("/challenge/{id}/member")
     public ResponseEntity<CreateChallengeMember> challengeMember(@PathVariable Long id) {
         CreateChallengeMember createChallengeMemberInfo = challengeService.createChallengeMemberInfo(id);
@@ -129,6 +136,7 @@ public class ChallengeController {
     /**
      * 리스트에서 특정 챌린지를 클릭했을때 그 챌린지에 대한 정보 주기
      */
+    //완료
     @GetMapping("/challenge/{id}")
     public ResponseEntity<Challenge> challenge(@PathVariable Long id) {
         Challenge findChallenge = challengeService.findOne(id);
@@ -139,6 +147,7 @@ public class ChallengeController {
      * 로그인 정보랑 챌린지를 만든 멤버의 정보가 일치하면 1을주고 일치하지 않으면 0을 준다.
      * 프론트엔드에서는 1일경우 버튼을 띄워주고 0일경우 버튼을 띄워주면 안된다.
      */
+    //완료
     @PostMapping("/challenge/{id}/equal")
     public ResponseEntity<?> challengeEqual(@PathVariable Long id, HttpServletRequest request) {
 
@@ -176,6 +185,7 @@ public class ChallengeController {
      * 챌린지 수정하기
      * 제목이랑 상세설명만 수정할 수 있음.
      */
+    //완료
     @PostMapping("/challenge/{id}/update")
     public ResponseEntity<?> updateChallenge(@PathVariable Long id, @Valid @RequestBody UpdateChallengeDTO updateChallengeDTO, BindingResult bindingResult , HttpServletRequest request) {
 
@@ -219,6 +229,7 @@ public class ChallengeController {
      * 챌린지 삭제하기 메서드
      * 세션에 있는 값을 조회하고 세션에 있는 로그인 멤버와 챌린지를 생성한 멤버의 정보가 같다면 삭제를 해주고 나머지는 실패이다.
      */
+    //완료
     @PostMapping("/challenge/{id}/delete")
     public ResponseEntity<?> deleteChallenge(@PathVariable Long id, HttpServletRequest request) {
 
@@ -255,6 +266,7 @@ public class ChallengeController {
      * 내가 만든 챌린지 리스트 조회하기
      * 로그인 멤버를 통해 내가 만든 챌린지 리스트 꺼내오기
      */
+    //프론트엔드 미완료
     @GetMapping("/mypage/challenges/create")
     public ResponseEntity<List<Challenge>> getCreateChallengeList(HttpServletRequest request) {
 
@@ -271,12 +283,32 @@ public class ChallengeController {
         List<Challenge> challengeList = challengeService.findChallengesByMemberId(loginMember);
 
         return ResponseEntity.ok(challengeList);
+
     }
 
     /**
      * 내가 참여한 챌린지 리스트 조회
      * 로그인 멤버 정보를 받아오고 participantChallenge 테이블에 값이 있는지 확인 하고 그 리스트들을 리턴해주면됨
      */
+    @GetMapping("/mypage/challenges/participation")
+    public ResponseEntity<List<Challenge>> getParticipationChallengeList(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        List<ParticipantChallenge> participantChallengeList = participantService.findParticipantListByMember(loginMember);
+        List<Challenge> challengeList = new ArrayList<>();
+        challengeList.add(challengeService.findOne(5L));
+        return ResponseEntity.ok(challengeList);
+
+    }
+
 
 
 
