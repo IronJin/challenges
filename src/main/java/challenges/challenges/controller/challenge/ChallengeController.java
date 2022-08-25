@@ -38,14 +38,15 @@ import java.util.List;
  * 챌린지 생성하는 로직 구현 (완료)
  * 챌린지 생성을 한다음에 endTime 에 맞추어 State 가 변하도록 설정을 해주어야함 (완료)
  * 챌린지 수정하기(완료)
- * 마이페이지에서 내가 만든 챌린지 리스트 조회하기(미완료)
  * 챌린지 삭제하기(완료)
  * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
- * 마이페이지에서 내가 참여한 챌린지 조회(미완료)
+ * 마이페이지에서 내가 참여한 챌린지 조회(미완료) - 마이페이지
  * 댓글 달기(미완료)
  * 좋아요 버튼 구성해서 값 올려주기(미완료)
- * 회원탈퇴(미완료)
- * 마이페이지에서 내 정보 수정하기(미완료)
+ * 회원탈퇴(미완료) - 마이페이지
+ * 마이페이지에서 내 정보 수정하기(미완료) - 마이페이지
+ * 기부하기(미완료)
+ * 마이페이지에서 내가 만든 챌린지 리스트 조회하기(미완료) - 마이페이지
  */
 
 @Controller
@@ -266,7 +267,7 @@ public class ChallengeController {
      * 내가 만든 챌린지 리스트 조회하기
      * 로그인 멤버를 통해 내가 만든 챌린지 리스트 꺼내오기
      */
-    //프론트엔드 미완료
+    //미완료
     @GetMapping("/mypage/challenges/create")
     public ResponseEntity<List<Challenge>> getCreateChallengeList(HttpServletRequest request) {
 
@@ -290,6 +291,7 @@ public class ChallengeController {
      * 내가 참여한 챌린지 리스트 조회
      * 로그인 멤버 정보를 받아오고 participantChallenge 테이블에 값이 있는지 확인 하고 그 리스트들을 리턴해주면됨
      */
+    //미완료
     @GetMapping("/mypage/challenges/participation")
     public ResponseEntity<List<Challenge>> getParticipationChallengeList(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -302,11 +304,9 @@ public class ChallengeController {
             return ResponseEntity.ok(null);
         }
 
-        List<ParticipantChallenge> participantChallengeList = participantService.findParticipantListByMember(loginMember);
-        List<Challenge> challengeList = new ArrayList<>();
-        challengeList.add(challengeService.findOne(5L));
-        return ResponseEntity.ok(challengeList);
+        List<Challenge> participantChallengeList = participantService.findParticipantListByMember(loginMember);
 
+        return ResponseEntity.ok(participantChallengeList);
     }
 
 

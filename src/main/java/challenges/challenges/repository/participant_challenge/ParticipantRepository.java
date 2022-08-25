@@ -29,10 +29,10 @@ public class ParticipantRepository {
         return count;
     }
 
-    public List<ParticipantChallenge> findParticipantListByMember(Member member) {
-        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT pc FROM ParticipantChallenge pc WHERE pc.pc_member = :member", ParticipantChallenge.class);
+    public List<Challenge> findParticipantListByMember(Member member) {
+        TypedQuery<Challenge> query = em.createQuery("SELECT c FROM ParticipantChallenge pc inner join pc.pc_challenge c WHERE pc.pc_member = :member", Challenge.class);
         query.setParameter("member", member);
-        List<ParticipantChallenge> participantChallengeList = query.getResultList();
+        List<Challenge> participantChallengeList = query.getResultList();
         return participantChallengeList;
     }
 

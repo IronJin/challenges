@@ -32,7 +32,7 @@ public class ParticipantController {
      * 챌린지에 참가하기 위해서는 로그인이 되어있어야함.
      * 따라서 세션을 먼저 조회해서 세션에 값이 있는지 없는지부터 확인을 해주어야함
      */
-    //미완료
+    //완료
     @PostMapping("/challenge/participate")
     public ResponseEntity<?> participateChallenge(@RequestBody ParticipateDTO participateDTO, HttpServletRequest request) {
         HashMap<String, String> response = new HashMap<>();
@@ -64,7 +64,7 @@ public class ParticipantController {
      * 참여중이라면 댓글 달기 텍스트박스를 띄울 수 있고 참여중이 아니라면 신청하기 버튼을 띄워주는 로직
      * 참여중이 아닐때는 0을 보내고 참여중이라면 1을 보냄 -> 프론트 엔드는 이 값을 가지고 댓글달수 있는 텍스트박스를 띄울건지 신청하기 버튼을 띄울건지 하면됨
      */
-    //미완료
+    //완료
     @PostMapping("/challenge/{id}/participant")
     public ResponseEntity<?> getParticipationStatus(@PathVariable Long id, HttpServletRequest request) {
         HashMap<String, Integer> response = new HashMap<>();
