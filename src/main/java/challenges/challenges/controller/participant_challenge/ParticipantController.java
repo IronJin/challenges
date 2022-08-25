@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -54,6 +55,37 @@ public class ParticipantController {
         Challenge challenge = challengeService.findOne(id);
         participantService.participantSave(challenge, loginMember);
         response.put("response","success");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 특정 챌린지를 클릭해서 상세정보 창을 들어갔을 때 즉, challenge/{id} 화면에 들어갔을 때
+     * 참여중이라면 댓글 달기 텍스트박스를 띄울 수 있고 참여중이 아니라면 신청하기 버튼을 띄워주는 로직
+     * 참여중이 아닐때는 0을 보내고 참여중이라면 1을 보냄 -> 프론트 엔드는 이 값을 가지고 댓글달수 있는 텍스트박스를 띄울건지 신청하기 버튼을 띄울건지 하면됨
+     */
+    @PostMapping("/challenge/{id}/participant")
+    public ResponseEntity<?> getParticipationStatus(@PathVariable Long id, HttpServletRequest request) {
+        HashMap<String, Integer> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+
+        Challenge findChallenge = challengeService.findOne(id);
+        long status = participantService.checkParticipationStatus(findChallenge, loginMember);
+        if(status == 0) {
+            response.put("response",0);
+            return ResponseEntity.ok(response);
+        }
+
+        response.put("response",1);
         return ResponseEntity.ok(response);
     }
 

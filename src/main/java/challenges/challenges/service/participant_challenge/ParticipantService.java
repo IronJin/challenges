@@ -23,6 +23,11 @@ public class ParticipantService {
         participantRepository.participantSave(participantChallenge);
     }
 
+    public long checkParticipationStatus(Challenge challenge, Member loginMember) {
+        long count = participantRepository.checkParticipation(challenge, loginMember);
+        return count;
+    }
+
 
 
 }
