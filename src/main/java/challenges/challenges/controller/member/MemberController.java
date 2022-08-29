@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -240,5 +241,64 @@ public class MemberController {
         response.put("response","성공적으로 탈퇴되었습니다.");
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 비밀번호 수정 로직
+     */
+    @PostMapping("/mypage/update/password")
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO, BindingResult bindingResult, HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        //로그인 멤버의 비밀번호와 현재 입력한 비밀번호가 일치하는지를 확인하는 로직
+        if(!loginMember.getM_password().equals(updatePasswordDTO.getM_oldpassword())){
+            response.put("response","기존 비밀번호가 일치하지 않습니다");
+            return ResponseEntity.ok(response);
+        }
+
+        //성공로직
+        try {
+            Member updatedMember = memberService.updatePassword(loginMember, updatePasswordDTO);
+            //세션에 업데이트된 멤버를 다시 넣어줌
+            session.setAttribute(SessionConst.LOGIN_MEMBER,updatedMember);
+            response.put("response","성공적으로 변경되었습니다");
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            response.put("response","알수없는 오류 발생");
+            return ResponseEntity.ok(response);
+        }
+
+
+    }
+
+    /**
+     * 멤버 정보 넘겨주기
+     * 마이페이지에 띄울 값임
+     */
+    @GetMapping("/mypage")
+    public ResponseEntity<Member> memberInfo(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok(loginMember);
+    }
+
+
 
 }

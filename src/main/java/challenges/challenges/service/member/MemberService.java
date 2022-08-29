@@ -2,6 +2,7 @@ package challenges.challenges.service.member;
 
 import challenges.challenges.controller.member.CheckLoginIdDTO;
 import challenges.challenges.controller.member.MemberDTO;
+import challenges.challenges.controller.member.UpdatePasswordDTO;
 import challenges.challenges.domain.Member;
 import challenges.challenges.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,11 @@ public class MemberService {
         memberRepository.deleteMember(member);
     }
 
+    @Transactional
+    public Member updatePassword(Member member, UpdatePasswordDTO updatePasswordDTO) {
+        Member updatedMember = memberRepository.updatePassword(member.getM_id(), updatePasswordDTO);
+        return updatedMember;
+    }
 
 
 

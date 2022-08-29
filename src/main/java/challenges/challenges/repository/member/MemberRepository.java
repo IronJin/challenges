@@ -1,5 +1,6 @@
 package challenges.challenges.repository.member;
 
+import challenges.challenges.controller.member.UpdatePasswordDTO;
 import challenges.challenges.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -76,6 +77,12 @@ public class MemberRepository {
     public void deleteMember(Member member) {
         Member findMember = em.find(Member.class, member.getM_id());
         em.remove(findMember);
+    }
+
+    public Member updatePassword(Long id, UpdatePasswordDTO updatePasswordDTO) {
+        Member findMember = em.find(Member.class, id);
+        findMember.setM_password(updatePasswordDTO.getM_newpassword());
+        return findMember;
     }
 
 }
