@@ -70,4 +70,12 @@ public class MemberRepository {
         return em.createQuery("select m from Member m", Member.class).getResultList();
     }
 
+    /**
+     * 멤버 객체 받아서 멤버 삭제하기
+     */
+    public void deleteMember(Member member) {
+        Member findMember = em.find(Member.class, member.getM_id());
+        em.remove(findMember);
+    }
+
 }

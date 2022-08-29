@@ -54,6 +54,14 @@ public class MemberService {
         return findMember;
     }
 
+    /**
+     * 회원탈퇴 로직
+     */
+    @Transactional
+    public void deleteMember(Member member) {
+        memberRepository.deleteMember(member);
+    }
+
 
 
 

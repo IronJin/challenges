@@ -1,13 +1,13 @@
 package challenges.challenges.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+
+import java.util.*;
 
 
 @Entity
@@ -35,6 +35,14 @@ public class Member {
 
     @Column(nullable = false)
     private LocalDate m_createTime;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<Challenge> challenges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pc_member",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<ParticipantChallenge> participantChallenges = new ArrayList<>();
 
     public static Member createMember(String m_name, String m_phoneNumber, String m_birth, String m_loginId, String m_password) {
         Member member = new Member();

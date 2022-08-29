@@ -201,4 +201,44 @@ public class MemberController {
 
     //--------------------------------------------------------------------------------------22-08-25 완료
 
+    /**
+     * 회원탈퇴 로직
+     */
+    @PostMapping("/mypage/member/delete")
+    public ResponseEntity<?> deleteMember(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult, HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            response.put("response","값을 입력해주세요.");
+            return ResponseEntity.ok(response);
+        }
+
+        //로그인이 되어있는지부터 확인할것
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요.");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요.");
+            return ResponseEntity.ok(response);
+        }
+
+        //비밀번호가 일치하는지를 확인할것
+        if(!passwordDTO.getM_password().equals(loginMember.getM_password())) {
+            response.put("response","비밀번호가 틀렸습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //회원탈퇴 로직
+        memberService.deleteMember(loginMember);
+        //세션에 있는 값도 지워줘야함
+        session.invalidate();
+        response.put("response","성공적으로 탈퇴되었습니다.");
+        return ResponseEntity.ok(response);
+    }
+
 }
