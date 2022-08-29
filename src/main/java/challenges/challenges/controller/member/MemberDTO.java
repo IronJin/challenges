@@ -22,4 +22,7 @@ public class MemberDTO {
 
     @NotEmpty
     private String m_password;
+
+    @NotEmpty
+    private String m_email;
 }

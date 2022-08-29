@@ -36,6 +36,9 @@ public class Member {
     @Column(nullable = false)
     private LocalDate m_createTime;
 
+    @Column(nullable = false)
+    private String m_email;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private List<Challenge> challenges = new ArrayList<>();
@@ -44,7 +47,7 @@ public class Member {
     @JsonIgnore
     private List<ParticipantChallenge> participantChallenges = new ArrayList<>();
 
-    public static Member createMember(String m_name, String m_phoneNumber, String m_birth, String m_loginId, String m_password) {
+    public static Member createMember(String m_name, String m_phoneNumber, String m_birth, String m_loginId, String m_password, String m_email) {
         Member member = new Member();
 
         member.setM_birth(m_birth);
@@ -53,6 +56,7 @@ public class Member {
         member.setM_password(m_password);
         member.setM_phoneNumber(m_phoneNumber);
         member.setM_createTime(LocalDate.now());
+        member.setM_email(m_email);
 
         return member;
     }

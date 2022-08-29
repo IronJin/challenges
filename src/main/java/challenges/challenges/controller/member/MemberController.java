@@ -205,6 +205,7 @@ public class MemberController {
     /**
      * 회원탈퇴 로직
      */
+    //완료
     @PostMapping("/mypage/member/delete")
     public ResponseEntity<?> deleteMember(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -245,10 +246,16 @@ public class MemberController {
     /**
      * 비밀번호 수정 로직
      */
+    //미완료
     @PostMapping("/mypage/update/password")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO, BindingResult bindingResult, HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            response.put("response","빈값이 있습니다.");
+            return ResponseEntity.ok(response);
+        }
 
         HttpSession session = request.getSession(false);
         if(session == null) {
@@ -287,6 +294,7 @@ public class MemberController {
      * 멤버 정보 넘겨주기
      * 마이페이지에 띄울 값임
      */
+    //미완료
     @GetMapping("/mypage")
     public ResponseEntity<Member> memberInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -298,6 +306,143 @@ public class MemberController {
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok(loginMember);
     }
+
+    /**
+     * 전화번호 변경 로직
+     */
+    //미완료
+    @PostMapping("/mypage/update/phone")
+    public ResponseEntity<?> updatePhoneNumber(@Valid @RequestBody UpdatePhoneNumberDTO updatePhoneNumberDTO, BindingResult bindingResult, HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            response.put("response","빈값이 있습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        //성공로직
+        try {
+            Member updatedMember = memberService.updatePhoneNumber(loginMember, updatePhoneNumberDTO);
+            //세션에 업데이트된 멤버를 다시 넣어줌
+            session.setAttribute(SessionConst.LOGIN_MEMBER,updatedMember);
+            response.put("response","성공적으로 변경되었습니다");
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            response.put("response","알수없는 오류 발생");
+            return ResponseEntity.ok(response);
+        }
+    }
+
+    /**
+     * 이메일 변경로직에서
+     * 이메일 입력받고 인증번호를 보내는 것까지의 로직
+     */
+    //미완료
+    @PostMapping("/mypage/update/email")
+    public ResponseEntity<?> updateEmailSend(@Valid @RequestBody UpdateEmailDTO updateEmailDTO, BindingResult bindingResult, HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            response.put("response","이메일을 입력해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        String mailCheck = emailService.mailCheck(updateEmailDTO.getM_email());
+
+        CodeDTO codeDTO = new CodeDTO();
+        codeDTO.setCode(mailCheck); // 전달형식은 다음과 같다. {"code" : "인증코드번호"}
+
+        session.setAttribute("code",codeDTO);
+        session.setMaxInactiveInterval(300); //5분간 유지
+
+        response.put("response","success");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 이메일 변경 로직에서
+     * 바뀐 이메일에 전송된 인증번호를 가지고 멤버의 이메일정보를 바꿀지 말지 결정하는 로직
+     */
+    //미완료
+    @PostMapping("/mypage/update/email/check")
+    public ResponseEntity<?> updateEmail(@Valid @RequestBody CodeDTO codeDTO,
+                                         @RequestBody UpdateEmailDTO updateEmailDTO,
+                                         BindingResult bindingResult, HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        if(bindingResult.hasErrors()) {
+            response.put("response","인증번호를 입력해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        HttpSession session = request.getSession(false);
+
+        //세션 만료 5분 지났을때 동작
+        if(session == null) {
+            response.put("response","인증번호를 먼저 보내야 합니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //이메일로 보낸 인증코드
+        //세션에 저장된 인증코드
+        CodeDTO sessionCode = (CodeDTO) session.getAttribute("code");
+
+        if(sessionCode == null) {
+            response.put("response","인증번호를 다시보내주세요.");
+            return ResponseEntity.ok(response);
+        }
+
+        //세션에 저장된 코드와 입력코드가 다르면 인증코드가 틀립니다 return 해줌
+        if(!sessionCode.getCode().equals(codeDTO.getCode())) {
+            response.put("response","인증코드가 틀립니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        //성공로직
+        try {
+            Member updatedMember = memberService.updateEmail(loginMember, updateEmailDTO);
+            //세션에 업데이트된 멤버를 다시 넣어줌
+            session.setAttribute(SessionConst.LOGIN_MEMBER,updatedMember);
+            response.put("response","성공적으로 변경되었습니다");
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            response.put("response","알수없는 오류 발생");
+            return ResponseEntity.ok(response);
+        }
+
+    }
+
 
 
 

@@ -6,12 +6,9 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 
 @Getter @Setter
-public class UpdatePasswordDTO {
+public class UpdateEmailDTO {
 
     @NotEmpty
-    private String m_oldpassword;
-
-    @NotEmpty
-    private String m_newpassword;
+    private String m_email;
 
 }

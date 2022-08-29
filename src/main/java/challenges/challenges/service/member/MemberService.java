@@ -1,8 +1,6 @@
 package challenges.challenges.service.member;
 
-import challenges.challenges.controller.member.CheckLoginIdDTO;
-import challenges.challenges.controller.member.MemberDTO;
-import challenges.challenges.controller.member.UpdatePasswordDTO;
+import challenges.challenges.controller.member.*;
 import challenges.challenges.domain.Member;
 import challenges.challenges.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,7 @@ public class MemberService {
     public void save(MemberDTO memberDTO) {
 
         Member member = Member.createMember(memberDTO.getM_name(), memberDTO.getM_phoneNumber(), memberDTO.getM_birth(), memberDTO.getM_loginId(),
-                memberDTO.getM_password());
+                memberDTO.getM_password(), memberDTO.getM_email());
 
         memberRepository.save(member);
     }
@@ -66,6 +64,18 @@ public class MemberService {
     @Transactional
     public Member updatePassword(Member member, UpdatePasswordDTO updatePasswordDTO) {
         Member updatedMember = memberRepository.updatePassword(member.getM_id(), updatePasswordDTO);
+        return updatedMember;
+    }
+
+    @Transactional
+    public Member updatePhoneNumber(Member member, UpdatePhoneNumberDTO updatePhoneNumberDTO) {
+        Member updatedMember = memberRepository.updatePhoneNumber(member.getM_id(), updatePhoneNumberDTO);
+        return updatedMember;
+    }
+
+    @Transactional
+    public Member updateEmail(Member member, UpdateEmailDTO updateEmailDTO){
+        Member updatedMember = memberRepository.updateEmail(member.getM_id(), updateEmailDTO);
         return updatedMember;
     }
 

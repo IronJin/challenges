@@ -1,6 +1,8 @@
 package challenges.challenges.repository.member;
 
+import challenges.challenges.controller.member.UpdateEmailDTO;
 import challenges.challenges.controller.member.UpdatePasswordDTO;
+import challenges.challenges.controller.member.UpdatePhoneNumberDTO;
 import challenges.challenges.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -82,6 +84,18 @@ public class MemberRepository {
     public Member updatePassword(Long id, UpdatePasswordDTO updatePasswordDTO) {
         Member findMember = em.find(Member.class, id);
         findMember.setM_password(updatePasswordDTO.getM_newpassword());
+        return findMember;
+    }
+
+    public Member updatePhoneNumber(Long id, UpdatePhoneNumberDTO updatePhoneNumberDTO) {
+        Member findMember = em.find(Member.class, id);
+        findMember.setM_phoneNumber(updatePhoneNumberDTO.getM_phoneNumber());
+        return findMember;
+    }
+
+    public Member updateEmail(Long id, UpdateEmailDTO updateEmailDTO) {
+        Member findMember = em.find(Member.class, id);
+        findMember.setM_email(updateEmailDTO.getM_email());
         return findMember;
     }
 
