@@ -74,8 +74,8 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateEmail(Member member, UpdateEmailDTO updateEmailDTO){
-        Member updatedMember = memberRepository.updateEmail(member.getM_id(), updateEmailDTO);
+    public Member updateEmail(Member member, EmailCodeDTO emailCodeDTO){
+        Member updatedMember = memberRepository.updateEmail(member.getM_id(), emailCodeDTO);
         return updatedMember;
     }
 

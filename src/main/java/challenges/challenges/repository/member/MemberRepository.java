@@ -1,5 +1,6 @@
 package challenges.challenges.repository.member;
 
+import challenges.challenges.controller.member.EmailCodeDTO;
 import challenges.challenges.controller.member.UpdateEmailDTO;
 import challenges.challenges.controller.member.UpdatePasswordDTO;
 import challenges.challenges.controller.member.UpdatePhoneNumberDTO;
@@ -93,9 +94,9 @@ public class MemberRepository {
         return findMember;
     }
 
-    public Member updateEmail(Long id, UpdateEmailDTO updateEmailDTO) {
+    public Member updateEmail(Long id, EmailCodeDTO emailCodeDTO) {
         Member findMember = em.find(Member.class, id);
-        findMember.setM_email(updateEmailDTO.getM_email());
+        findMember.setM_email(emailCodeDTO.getM_email());
         return findMember;
     }
 

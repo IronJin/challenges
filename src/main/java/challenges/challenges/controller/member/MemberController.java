@@ -389,8 +389,7 @@ public class MemberController {
      */
     //미완료
     @PostMapping("/mypage/update/email/check")
-    public ResponseEntity<?> updateEmail(@Valid @RequestBody CodeDTO codeDTO,
-                                         @RequestBody UpdateEmailDTO updateEmailDTO,
+    public ResponseEntity<?> updateEmail(@Valid @RequestBody EmailCodeDTO emailCodeDTO,
                                          BindingResult bindingResult, HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
@@ -418,7 +417,7 @@ public class MemberController {
         }
 
         //세션에 저장된 코드와 입력코드가 다르면 인증코드가 틀립니다 return 해줌
-        if(!sessionCode.getCode().equals(codeDTO.getCode())) {
+        if(!sessionCode.getCode().equals(emailCodeDTO.getCode())) {
             response.put("response","인증코드가 틀립니다.");
             return ResponseEntity.ok(response);
         }
@@ -431,7 +430,7 @@ public class MemberController {
 
         //성공로직
         try {
-            Member updatedMember = memberService.updateEmail(loginMember, updateEmailDTO);
+            Member updatedMember = memberService.updateEmail(loginMember, emailCodeDTO);
             //세션에 업데이트된 멤버를 다시 넣어줌
             session.setAttribute(SessionConst.LOGIN_MEMBER,updatedMember);
             response.put("response","성공적으로 변경되었습니다");
