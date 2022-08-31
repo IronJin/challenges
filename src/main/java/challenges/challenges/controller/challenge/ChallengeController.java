@@ -32,7 +32,7 @@ import java.util.UUID;
 
 
 /**
- * 마지막 수정일 2022-08-29
+ * 마지막 수정일 2022-08-31
  * 작성자 : 양철진
  **/
 
@@ -46,11 +46,10 @@ import java.util.UUID;
  * 내가 만든 챌린지 리스트 조회하기(완료) - 마이페이지
  * 회원탈퇴(완료) - 마이페이지
  * 마이페이지에서 내 정보 수정하기(완료) - 마이페이지
+ * 댓글 달기(완료)
+ * 좋아요 버튼 구성해서 값 올려주기(완료)
  * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
- * 댓글 달기(미완료)
  * 내가 단 댓글 마이페이지에 띄우기(미완료)
- * 좋아요 버튼 구성해서 값 올려주기(미완료)
- *
  * 기부하기(미완료)
  *
  */
@@ -389,6 +388,97 @@ public class ChallengeController {
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
+    }
+
+    /**
+     * 댓글 리스트 프론트엔드에 보내주기
+     */
+    @GetMapping("/challenge/{id}/replyList")
+    public ResponseEntity<List<Reply>> replyList(@PathVariable Long id) {
+        Challenge challenge = challengeService.findOne(id);
+        List<Reply> replyList = challengeService.getReplyList(challenge);
+        return ResponseEntity.ok(replyList);
+    }
+
+
+    /**
+     * 좋아요를 누른적이 있는지 없는지를 보내주는 메소드
+     * 있으면 1, 없으면 0 을 보내줌
+     * 1일경우 꽉찬 하트를 화면에 표시, 0일경우 빈하트를 표시
+     */
+    //미완료
+    @GetMapping("/challenge/{id}/heart")
+    public ResponseEntity<?> checkHeart(@PathVariable Long id, HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Challenge challenge = challengeService.findOne(id);
+
+        long count = challengeService.checkHearts(loginMember, challenge);
+
+        if(count == 1) {
+            response.put("response","1");
+            return ResponseEntity.ok(response);
+        }
+
+        response.put("response","0");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 좋아요 버튼을 눌렀을때 작동하는 메서드
+     * 프론트엔드가 서버에 1을 넘겨주면 좋아요를 누른것, 0을 넘겨주면 좋아요를 취소한 것임
+     */
+    //미완료
+    @PostMapping("/challenge/{id}/heart")
+    public ResponseEntity<?> updateHearts(@PathVariable Long id, @RequestBody LikeDTO likeDTO, HttpServletRequest request) {
+
+        HashMap<String, String> errorResponse = new HashMap<>();
+        HashMap<String, Integer> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            errorResponse.put("response","로그인을 다시 해야합니다.");
+            return ResponseEntity.ok(errorResponse);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            errorResponse.put("response","로그인을 다시 해야합니다");
+            return ResponseEntity.ok(errorResponse);
+        }
+
+        Challenge challenge = challengeService.findOne(id);
+
+        //좋아요 버튼을 누른것임
+        if(likeDTO.getLike() == 1) {
+            challengeService.heartsUp(loginMember, challenge);
+            response.put("response",challenge.getC_hearts());
+            return ResponseEntity.ok(response);
+        }
+
+        //좋아요 버튼을 취소한것임
+        if(likeDTO.getLike() == 0) {
+            challengeService.heartsDown(loginMember,challenge);
+            response.put("response",challenge.getC_hearts());
+            return ResponseEntity.ok(response);
+        }
+
+        //알수없는 오류가 발생한 것임
+        errorResponse.put("response","오류 발생");
+        return ResponseEntity.ok(response);
     }
 
 

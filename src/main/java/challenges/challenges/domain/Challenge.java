@@ -38,7 +38,7 @@ public class Challenge {
     private String c_detail;
 
     //추천수
-    private int c_recommendation;
+    private int c_hearts;
 
     @Enumerated(EnumType.STRING)
     private State c_state;
@@ -58,6 +58,10 @@ public class Challenge {
     @JsonIgnore
     private List<ParticipantChallenge> participantChallengeList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "h_challenge", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<Hearts> heartsList = new ArrayList<>();
+
     public static Challenge createChallenge(String c_title ,String c_detail, String c_donation_destination, LocalDate c_endTime, Member member) {
 
         Challenge challenge = new Challenge();
@@ -74,6 +78,14 @@ public class Challenge {
         challenge.setC_title(c_title);
         //challenge.setReplyList(new ArrayList<>());
         return challenge;
+    }
+
+    public void addHeart() {
+        this.c_hearts += 1;
+    }
+
+    public void removeHeart() {
+        this.c_hearts -= 1;
     }
 
 }

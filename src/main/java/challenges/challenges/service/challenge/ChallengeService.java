@@ -2,9 +2,7 @@ package challenges.challenges.service.challenge;
 
 import challenges.challenges.controller.challenge.CreateChallengeMember;
 import challenges.challenges.controller.challenge.UpdateChallengeDTO;
-import challenges.challenges.domain.Challenge;
-import challenges.challenges.domain.Member;
-import challenges.challenges.domain.State;
+import challenges.challenges.domain.*;
 import challenges.challenges.repository.challenge.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -81,6 +79,31 @@ public class ChallengeService {
     public List<Challenge> findChallengesByMemberId(Member loginMember){
         List<Challenge> challengeList = challengeRepository.findChallengesByMemberId(loginMember);
         return challengeList;
+    }
+
+    //챌린지 좋아요 누른거 있나 확인
+    public long checkHearts(Member member, Challenge challenge) {
+        long count = challengeRepository.checkHearts(member, challenge);
+        return count;
+    }
+
+    //좋아요 버튼 누르기
+    @Transactional
+    public void heartsUp(Member member, Challenge challenge) {
+        Hearts hearts = Hearts.createHearts(member,challenge);
+        challengeRepository.saveHearts(hearts);
+    }
+
+    //좋아요 버튼 취소하기
+    @Transactional
+    public void heartsDown(Member member, Challenge challenge) {
+        challengeRepository.deleteHearts(member, challenge);
+        challenge.removeHeart();
+    }
+
+    public List<Reply> getReplyList(Challenge challenge) {
+        List<Reply> replyList = challengeRepository.getReplyList(challenge);
+        return replyList;
     }
 
 

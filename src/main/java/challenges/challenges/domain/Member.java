@@ -47,6 +47,10 @@ public class Member {
     @JsonIgnore
     private List<ParticipantChallenge> participantChallenges = new ArrayList<>();
 
+    @OneToMany(mappedBy = "h_member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<Hearts> heartsList = new ArrayList<>();
+
     public static Member createMember(String m_name, String m_phoneNumber, String m_birth, String m_loginId, String m_password, String m_email) {
         Member member = new Member();
 

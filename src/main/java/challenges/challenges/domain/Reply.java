@@ -23,10 +23,12 @@ public class Reply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member r_member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
+    @JsonIgnore
     private Challenge r_challenge;
 
     public static Reply createReply(String r_detail, String r_fileName, String r_filePath, Member member, Challenge challenge) {
