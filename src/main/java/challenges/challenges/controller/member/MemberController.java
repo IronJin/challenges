@@ -246,7 +246,7 @@ public class MemberController {
     /**
      * 비밀번호 수정 로직
      */
-    //미완료
+    //완료
     @PostMapping("/mypage/update/password")
     public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -310,7 +310,7 @@ public class MemberController {
     /**
      * 전화번호 변경 로직
      */
-    //미완료
+    //완료
     @PostMapping("/mypage/update/phone")
     public ResponseEntity<?> updatePhoneNumber(@Valid @RequestBody UpdatePhoneNumberDTO updatePhoneNumberDTO, BindingResult bindingResult, HttpServletRequest request) {
         HashMap<String, String> response = new HashMap<>();
@@ -349,7 +349,7 @@ public class MemberController {
      * 이메일 변경로직에서
      * 이메일 입력받고 인증번호를 보내는 것까지의 로직
      */
-    //미완료
+    //완료
     @PostMapping("/mypage/update/email")
     public ResponseEntity<?> updateEmailSend(@Valid @RequestBody UpdateEmailDTO updateEmailDTO, BindingResult bindingResult, HttpServletRequest request) {
         HashMap<String, String> response = new HashMap<>();
@@ -387,7 +387,7 @@ public class MemberController {
      * 이메일 변경 로직에서
      * 바뀐 이메일에 전송된 인증번호를 가지고 멤버의 이메일정보를 바꿀지 말지 결정하는 로직
      */
-    //미완료
+    //완료
     @PostMapping("/mypage/update/email/check")
     public ResponseEntity<?> updateEmail(@Valid @RequestBody EmailCodeDTO emailCodeDTO,
                                          BindingResult bindingResult, HttpServletRequest request) {

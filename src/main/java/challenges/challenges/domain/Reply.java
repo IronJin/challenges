@@ -29,4 +29,17 @@ public class Reply {
     @JoinColumn(name = "challenge_id")
     private Challenge r_challenge;
 
+    public static Reply createReply(String r_detail, String r_fileName, String r_filePath, Member member, Challenge challenge) {
+
+        Reply reply = new Reply();
+
+        reply.setR_detail(r_detail);
+        reply.setR_fileName(r_fileName);
+        reply.setR_filePath(r_filePath);
+        reply.setR_member(member);
+        reply.setR_challenge(challenge);
+
+        return reply;
+    }
+
 }

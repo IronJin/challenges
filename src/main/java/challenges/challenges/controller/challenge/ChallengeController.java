@@ -4,9 +4,11 @@ import challenges.challenges.controller.member.SessionConst;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.domain.ParticipantChallenge;
+import challenges.challenges.domain.Reply;
 import challenges.challenges.service.challenge.ChallengeService;
 
 import challenges.challenges.service.participant_challenge.ParticipantService;
+import challenges.challenges.service.reply.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,18 +16,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -45,6 +48,7 @@ import java.util.List;
  * 마이페이지에서 내 정보 수정하기(완료) - 마이페이지
  * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
  * 댓글 달기(미완료)
+ * 내가 단 댓글 마이페이지에 띄우기(미완료)
  * 좋아요 버튼 구성해서 값 올려주기(미완료)
  *
  * 기부하기(미완료)
@@ -58,6 +62,9 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
     private final ParticipantService participantService;
+    private final ReplyService replyService;
+
+    private static String Path = "C:/KBBankStorage/";
 
     //완료
     @PostMapping("/challenge/new")
@@ -314,12 +321,75 @@ public class ChallengeController {
         return ResponseEntity.ok(participantChallengeList);
     }
 
+    /**
+     * 챌린지에 동영상 및 댓글 업로드
+     */
+    //미완료
+    @PostMapping("/challenge/{id}/reply")
+    public ResponseEntity<?> uploadReply(@PathVariable Long id,
+                                         @RequestPart(value = "file", required = false) MultipartFile multipartFile,
+                                         @RequestPart(value = "replyReq") ReplyDTO replyDTO,
+                                         HttpServletRequest request) throws IOException {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        //챌린지 객체 가져오기
+        Challenge findChallenge = challengeService.findOne(id);
+
+        //현재 멤버객체 가져오기
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        if(multipartFile.isEmpty()) {
+            response.put("response","동영상을 반드시 첨부해야 합니다");
+            return ResponseEntity.ok(response);
+        }
 
 
+        //사진 저장하기
+        //uuid로 변경하고 저장한 다음 파일명하고 파일경로를 받아와야함
+        String originalFileName = multipartFile.getOriginalFilename();
+
+        //uuid 로 변환
+        String storeFileName = createStoreFileName(originalFileName);
+
+        //로컬에 파일 저장
+        multipartFile.transferTo(new File((getFullPath(storeFileName))));
 
 
+        //Reply 만들어주기
+        Reply reply = Reply.createReply(replyDTO.getR_detail(), storeFileName, Path, loginMember, findChallenge);
 
+        //DB에 저장하기기
+        replyService.saveReply(reply);
+        response.put("response","댓글달기 완료");
+        return ResponseEntity.ok(response);
+    }
 
+    //" "여기안에 로컬저장소를 입력하면됨
+    public String getFullPath(String filename) {
+        return Path + filename;
+    }
+
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
+
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+        return originalFilename.substring(pos + 1);
+    }
 
 
 }
