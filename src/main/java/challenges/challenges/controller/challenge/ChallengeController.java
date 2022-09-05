@@ -48,7 +48,7 @@ import java.util.UUID;
  * 마이페이지에서 내 정보 수정하기(완료) - 마이페이지
  * 댓글 달기(완료)
  * 좋아요 버튼 구성해서 값 올려주기(완료)
- * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(미완료)
+ * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(완료) - 프론트
  * 내가 단 댓글 마이페이지에 띄우기(미완료)
  * 기부하기(미완료)
  *
@@ -403,7 +403,7 @@ public class ChallengeController {
     /**
      * 댓글 리스트 프론트엔드에 보내주기
      */
-
+    //미완료
     @GetMapping("/challenge/{id}/replyList")
     public ResponseEntity<List<Reply>> replyList(@PathVariable Long id) {
         Challenge challenge = challengeService.findOne(id);
@@ -417,7 +417,7 @@ public class ChallengeController {
      * 있으면 1, 없으면 0 을 보내줌
      * 1일경우 꽉찬 하트를 화면에 표시, 0일경우 빈하트를 표시
      */
-    //미완료
+    //완료
     @GetMapping("/challenge/{id}/heart")
     public ResponseEntity<?> checkHeart(@PathVariable Long id, HttpServletRequest request) {
 
@@ -452,7 +452,7 @@ public class ChallengeController {
      * 좋아요 버튼을 눌렀을때 작동하는 메서드
      * 프론트엔드가 서버에 1을 넘겨주면 좋아요를 누른것, 0을 넘겨주면 좋아요를 취소한 것임
      */
-    //미완료
+    //완료
     @PostMapping("/challenge/{id}/heart")
     public ResponseEntity<?> updateHearts(@PathVariable Long id, @RequestBody LikeDTO likeDTO, HttpServletRequest request) {
 
@@ -476,14 +476,14 @@ public class ChallengeController {
         log.info("like : {}",likeDTO.getLike());
 
         //좋아요 버튼을 누른것임
-        if(likeDTO.getLike().equals("1")) {
+        if(likeDTO.getLike().equals("0")) {
             challengeService.heartsUp(loginMember, challenge);
             response.put("response",challenge.getC_hearts());
             return ResponseEntity.ok(response);
         }
 
         //좋아요 버튼을 취소한것임
-        if(likeDTO.getLike().equals("0")) {
+        if(likeDTO.getLike().equals("1")) {
             try{
                 challengeService.heartsDown(loginMember,challenge);
                 response.put("response",challenge.getC_hearts());
