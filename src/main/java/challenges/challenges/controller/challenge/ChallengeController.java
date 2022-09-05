@@ -48,7 +48,8 @@ import java.util.UUID;
  * 마이페이지에서 내 정보 수정하기(완료) - 마이페이지
  * 댓글 달기(완료)
  * 좋아요 버튼 구성해서 값 올려주기(완료)
- * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(완료) - 프론트
+ * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(완료) - 프론트해야함
+ * 좋아요 한 챌린지 넘겨주기(미완료)
  * 내가 단 댓글 마이페이지에 띄우기(미완료)
  * 기부하기(미완료)
  *
@@ -405,10 +406,20 @@ public class ChallengeController {
      */
     //미완료
     @GetMapping("/challenge/{id}/replyList")
-    public ResponseEntity<List<Reply>> replyList(@PathVariable Long id) {
+    public ResponseEntity<List<ReplyListDTO>> replyList(@PathVariable Long id) {
         Challenge challenge = challengeService.findOne(id);
         List<Reply> replyList = challengeService.getReplyList(challenge);
-        return ResponseEntity.ok(replyList);
+        List<ReplyListDTO> replyListDTOs = new ArrayList<>();
+        for (Reply reply : replyList) {
+            ReplyListDTO replyListDTO = new ReplyListDTO();
+            replyListDTO.setId(replyListDTO.getId());
+            replyListDTO.setR_detail(reply.getR_detail());
+            replyListDTO.setR_fileName(reply.getR_fileName());
+            replyListDTO.setR_filePath(reply.getR_filePath());
+            replyListDTO.setR_member(reply.getR_member().getM_loginId());
+            replyListDTOs.add(replyListDTO);
+        }
+        return ResponseEntity.ok(replyListDTOs);
     }
 
 
@@ -503,6 +514,11 @@ public class ChallengeController {
         errorResponse.put("response","알수없는 에러가 발생했습니다.");
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 내가 좋아요한 챌린지 리스트
+     */
+
 
 
 }

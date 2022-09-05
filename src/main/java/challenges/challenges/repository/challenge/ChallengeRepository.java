@@ -97,11 +97,13 @@ public class ChallengeRepository {
      * 댓글 리스트 보내주기
      */
     public List<Reply> getReplyList(Challenge challenge) {
-        TypedQuery<Reply> query = em.createQuery("SELECT r FROM Reply r WHERE r.r_challenge = :challenge", Reply.class);
+        TypedQuery<Reply> query = em.createQuery("SELECT r FROM Reply r join fetch r.r_member WHERE r.r_challenge = :challenge", Reply.class);
         query.setParameter("challenge",challenge);
         List<Reply> replyList = query.getResultList();
         return replyList;
     }
+
+
 
 
 }
