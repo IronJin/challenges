@@ -422,29 +422,33 @@ public class ChallengeController {
     public ResponseEntity<?> checkHeart(@PathVariable Long id, HttpServletRequest request) {
 
         HashMap<String, String> response = new HashMap<>();
+        Challenge challenge = challengeService.findOne(id);
+        int hearts = challenge.getC_hearts();
 
         HttpSession session = request.getSession(false);
         if(session == null) {
-            response.put("response","로그인을 해주세요");
+            response.put("response","0");
+            response.put("hearts",String.valueOf(hearts));
             return ResponseEntity.ok(response);
         }
 
         Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         if(loginMember == null) {
-            response.put("response","로그인을 다시 해주세요");
+            response.put("response","0");
+            response.put("hearts",String.valueOf(hearts));
             return ResponseEntity.ok(response);
         }
-
-        Challenge challenge = challengeService.findOne(id);
 
         long count = challengeService.checkHearts(loginMember, challenge);
 
         if(count == 1) {
             response.put("response","1");
+            response.put("hearts",String.valueOf(hearts));
             return ResponseEntity.ok(response);
         }
 
         response.put("response","0");
+        response.put("hearts",String.valueOf(hearts));
         return ResponseEntity.ok(response);
     }
 
@@ -496,7 +500,7 @@ public class ChallengeController {
         }
 
         //알수없는 오류가 발생한 것임
-        errorResponse.put("response","오류 발생");
+        errorResponse.put("response","알수없는 에러가 발생했습니다.");
         return ResponseEntity.ok(response);
     }
 
