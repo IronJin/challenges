@@ -473,17 +473,17 @@ public class ChallengeController {
 
         Challenge challenge = challengeService.findOne(id);
 
-        log.info("like : {}",likeDTO.isLike());
+        log.info("like : {}",likeDTO.getLike());
 
         //좋아요 버튼을 누른것임
-        if(likeDTO.isLike() == true) {
+        if(likeDTO.getLike().equals(1)) {
             challengeService.heartsUp(loginMember, challenge);
             response.put("response",challenge.getC_hearts());
             return ResponseEntity.ok(response);
         }
 
         //좋아요 버튼을 취소한것임
-        if(likeDTO.isLike() == false) {
+        if(likeDTO.getLike().equals(0)) {
             try{
                 challengeService.heartsDown(loginMember,challenge);
                 response.put("response",challenge.getC_hearts());
