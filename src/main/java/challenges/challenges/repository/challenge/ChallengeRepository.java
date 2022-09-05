@@ -103,6 +103,10 @@ public class ChallengeRepository {
         return replyList;
     }
 
+    /**
+     * 좋아요를 누른 챌린지 리스트
+     * hearts 테이블에 로그인한 멤버가 존재해야하고
+     */
 
 
 

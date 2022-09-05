@@ -412,7 +412,7 @@ public class ChallengeController {
         List<ReplyListDTO> replyListDTOs = new ArrayList<>();
         for (Reply reply : replyList) {
             ReplyListDTO replyListDTO = new ReplyListDTO();
-            replyListDTO.setId(replyListDTO.getId());
+            replyListDTO.setId(reply.getId());
             replyListDTO.setR_detail(reply.getR_detail());
             replyListDTO.setR_fileName(reply.getR_fileName());
             replyListDTO.setR_filePath(reply.getR_filePath());
