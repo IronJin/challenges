@@ -31,7 +31,7 @@ public class ParticipantChallenge {
         ParticipantChallenge participantChallenge = new ParticipantChallenge();
         participantChallenge.setPc_challenge(challenge);
         participantChallenge.setPc_member(member);
-
+        challenge.addChallengers();
         return participantChallenge;
     }
 

@@ -88,4 +88,12 @@ public class Challenge {
         this.c_hearts -= 1;
     }
 
+    public void addChallengers() {
+        this.c_challengers += 1;
+    }
+
+    public void removeChallengers() {
+        this.c_challengers -= 1;
+    }
+
 }

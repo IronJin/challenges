@@ -393,6 +393,7 @@ public class ChallengeController {
     /**
      * 댓글 리스트 프론트엔드에 보내주기
      */
+
     @GetMapping("/challenge/{id}/replyList")
     public ResponseEntity<List<Reply>> replyList(@PathVariable Long id) {
         Challenge challenge = challengeService.findOne(id);
@@ -461,6 +462,8 @@ public class ChallengeController {
         }
 
         Challenge challenge = challengeService.findOne(id);
+
+        log.info("like : {}",likeDTO.getLike());
 
         //좋아요 버튼을 누른것임
         if(likeDTO.getLike() == 1) {
