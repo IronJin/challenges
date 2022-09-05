@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter @Setter
 public class LikeDTO {
 
-    private int like;
+    private boolean like;
 
 }

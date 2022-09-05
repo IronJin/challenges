@@ -132,6 +132,16 @@ public class ChallengeController {
     }
 
     /**
+     * END 상태인 챌린지 리스트들을 보내주는 메소드
+     */
+    //미완료
+    @GetMapping("challenge/list/end")
+    public ResponseEntity<List<Challenge>> endChallengeList() {
+        List<Challenge> endChallengeList = challengeService.endChallengeList();
+        return ResponseEntity.ok(endChallengeList);
+    }
+
+    /**
      * 특정 챌린지를 생성한 멤버의 간단한 로그인 정보를 주는 메소드
      * 추가적으로 챌린지 정보도 함께 넘겨주어야함
      */
@@ -463,20 +473,26 @@ public class ChallengeController {
 
         Challenge challenge = challengeService.findOne(id);
 
-        log.info("like : {}",likeDTO.getLike());
+        log.info("like : {}",likeDTO.isLike());
 
         //좋아요 버튼을 누른것임
-        if(likeDTO.getLike() == 1) {
+        if(likeDTO.isLike() == true) {
             challengeService.heartsUp(loginMember, challenge);
             response.put("response",challenge.getC_hearts());
             return ResponseEntity.ok(response);
         }
 
         //좋아요 버튼을 취소한것임
-        if(likeDTO.getLike() == 0) {
-            challengeService.heartsDown(loginMember,challenge);
-            response.put("response",challenge.getC_hearts());
-            return ResponseEntity.ok(response);
+        if(likeDTO.isLike() == false) {
+            try{
+                challengeService.heartsDown(loginMember,challenge);
+                response.put("response",challenge.getC_hearts());
+                return ResponseEntity.ok(response);
+            }catch (Exception e) {
+                errorResponse.put("response","에러가 발생했습니다.");
+                return ResponseEntity.ok(errorResponse);
+            }
+
         }
 
         //알수없는 오류가 발생한 것임

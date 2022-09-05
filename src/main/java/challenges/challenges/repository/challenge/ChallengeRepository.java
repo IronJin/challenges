@@ -26,10 +26,17 @@ public class ChallengeRepository {
     }
 
     /**
-     * 모든 챌린지 정보 조회
+     * 진행중인 모든 챌린지 정보 조회
      */
     public List<Challenge> findAll() {
         return em.createQuery("select c from Challenge c where c.c_state = 'PROCEED' ", Challenge.class).getResultList();
+    }
+
+    /**
+     * 기간이 지난 모든 챌린지 정보 조회
+     */
+    public List<Challenge> findEndAll() {
+        return em.createQuery("select c from Challenge c where c.c_state = 'END' ", Challenge.class).getResultList();
     }
 
     public Challenge findById(Long id) {

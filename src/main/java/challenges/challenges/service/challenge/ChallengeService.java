@@ -50,6 +50,11 @@ public class ChallengeService {
     }
 
     //조회
+    public List<Challenge> endChallengeList() {
+        return challengeRepository.findEndAll();
+    }
+
+    //조회
     public CreateChallengeMember createChallengeMemberInfo(Long id) {
         Challenge challenge = challengeRepository.findById(id);
         Member member = challenge.getMember();
@@ -90,8 +95,11 @@ public class ChallengeService {
     //좋아요 버튼 누르기
     @Transactional
     public void heartsUp(Member member, Challenge challenge) {
-        Hearts hearts = Hearts.createHearts(member,challenge);
-        challengeRepository.saveHearts(hearts);
+        long count = challengeRepository.checkHearts(member, challenge);
+        if(count == 0) {
+            Hearts hearts = Hearts.createHearts(member,challenge);
+            challengeRepository.saveHearts(hearts);
+        }
     }
 
     //좋아요 버튼 취소하기
