@@ -39,4 +39,8 @@ public class ParticipantChallenge {
         return participantChallenge;
     }
 
+    public void addPrice(int price) {
+        this.pc_totalPrice += price;
+    }
+
 }

@@ -6,11 +6,13 @@ import challenges.challenges.domain.ParticipantChallenge;
 import challenges.challenges.domain.Payment;
 import challenges.challenges.repository.participant_challenge.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,8 +46,9 @@ public class ParticipantService {
         ParticipantChallenge findParticipantChallenge = participantRepository.findParticipantChallengeByChallengeAndMember(challenge, member);
         Payment payment = Payment.createPayment(price, findParticipantChallenge);
         participantRepository.savePayment(payment);
-
-        //챌린지의 토탈 가격도 올려줘야함
+        log.info("-------------------------------------------price : {}",price);
+        //챌린지와 참여중인 챌린지의 토탈 가격도 올려줘야함
+        findParticipantChallenge.addPrice(price);
         challenge.addTotalPrice(price);
     }
 

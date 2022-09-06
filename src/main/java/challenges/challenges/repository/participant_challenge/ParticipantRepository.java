@@ -41,7 +41,7 @@ public class ParticipantRepository {
      * 멤버와 챌린지로 참가 챌린지 테이블 값 가져오기
      */
     public ParticipantChallenge findParticipantChallengeByChallengeAndMember(Challenge challenge, Member member) {
-        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT ParticipantChallenge pc where pc.pc_member = :loginMember and pc.pc_challenge = :challenge", ParticipantChallenge.class);
+        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT pc From ParticipantChallenge pc where pc.pc_member = :member and pc.pc_challenge = :challenge", ParticipantChallenge.class);
         query.setParameter("member",member);
         query.setParameter("challenge",challenge);
         return query.getSingleResult();
