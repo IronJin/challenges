@@ -107,6 +107,12 @@ public class ChallengeRepository {
      * 좋아요를 누른 챌린지 리스트
      * hearts 테이블에 로그인한 멤버가 존재해야하고
      */
+    public List<Hearts> getLikeChallengeByMember(Member member) {
+        TypedQuery<Hearts> query = em.createQuery("SELECT h FROM Hearts h join fetch h.h_challenge WHERE h.h_member = :member ", Hearts.class);
+        query.setParameter("member",member);
+        List<Hearts> heartsList = query.getResultList();
+        return heartsList;
+    }
 
 
 

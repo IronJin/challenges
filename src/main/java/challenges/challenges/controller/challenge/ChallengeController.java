@@ -1,10 +1,7 @@
 package challenges.challenges.controller.challenge;
 
 import challenges.challenges.controller.member.SessionConst;
-import challenges.challenges.domain.Challenge;
-import challenges.challenges.domain.Member;
-import challenges.challenges.domain.ParticipantChallenge;
-import challenges.challenges.domain.Reply;
+import challenges.challenges.domain.*;
 import challenges.challenges.service.challenge.ChallengeService;
 
 import challenges.challenges.service.participant_challenge.ParticipantService;
@@ -32,7 +29,7 @@ import java.util.UUID;
 
 
 /**
- * 마지막 수정일 2022-08-31
+ * 마지막 수정일 2022-09-05
  * 작성자 : 양철진
  **/
 
@@ -49,8 +46,8 @@ import java.util.UUID;
  * 댓글 달기(완료)
  * 좋아요 버튼 구성해서 값 올려주기(완료)
  * 챌린지 기간이 끝난 챌린지 리스트를 또 따로 넘겨주어야함(완료) - 프론트해야함
- * 좋아요 한 챌린지 넘겨주기(미완료)
- * 내가 단 댓글 마이페이지에 띄우기(미완료)
+ * 좋아요 한 챌린지 넘겨주기(완료) - 프론트 미완료
+ * 내가 단 댓글 마이페이지에 띄우기(DTO 빼고 완료)
  * 기부하기(미완료)
  *
  */
@@ -516,8 +513,65 @@ public class ChallengeController {
     }
 
     /**
-     * 내가 좋아요한 챌린지 리스트
+     * 특정 멤버가 좋아요한 챌린지 리스트
      */
+    //미완료
+    @GetMapping("/mypage/challenges/like")
+    public ResponseEntity<?> getLikeChallengeByMember(HttpServletRequest request) {
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해야합니다");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        List<Hearts> likeChallengeByMember = challengeService.getLikeChallengeByMember(loginMember);
+        List<Challenge> challengeList = new ArrayList<>();
+
+        for (Hearts hearts : likeChallengeByMember) {
+            Challenge challenge = hearts.getH_challenge();
+            challengeList.add(challenge);
+        }
+
+        return ResponseEntity.ok(challengeList);
+    }
+
+
+    /**
+     * 특정 멤버가 댓글을 단 챌린지 리스트 중복허용
+     *
+     * ***************추후 마이페이지에 어떻게 띄울것인지를 상의한 후에 DTO 를 만들어 필요한 정보를 담고 넘겨줄 것임 , 일단은 챌린지와 페지조인하여 댓글 정보를 데베에서 가져오는 작업을 수행했음
+     */
+    //미완료
+    @GetMapping("/mypage/challenges/reply")
+    public ResponseEntity<?> getReplyChallengeList(HttpServletRequest request) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.put("response","로그인을 해야합니다");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        List<Reply> challengeList = replyService.getReplyChallengeByMember(loginMember);
+        return ResponseEntity.ok(challengeList);
+
+    }
+
 
 
 

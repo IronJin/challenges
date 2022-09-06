@@ -114,5 +114,13 @@ public class ChallengeService {
         return replyList;
     }
 
+    /**
+     * 특정 멤버가 좋아요 누른 챌린지 보내주기
+     */
+    public List<Hearts> getLikeChallengeByMember(Member member) {
+        List<Hearts> heartsList = challengeRepository.getLikeChallengeByMember(member);
+        return heartsList;
+    }
+
 
 }
