@@ -19,7 +19,7 @@ public class Payment {
     private LocalDate p_paymentTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "participantChallenge_id")
+    @JoinColumn(name = "participant_id")
     private ParticipantChallenge participantChallenge;
 
 
