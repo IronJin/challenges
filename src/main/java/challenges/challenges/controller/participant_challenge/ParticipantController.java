@@ -91,5 +91,43 @@ public class ParticipantController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 결제완료창 - 결제 완료가 되었으므로 DB에 값을 넣음
+     */
+    @PostMapping("/challenge/{id}/payment")
+    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, PaymentReqDTO paymentReqDTO) {
+
+        HashMap<String, String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            response.put("response","로그인을 해야합니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해야합니다");
+            return ResponseEntity.ok(response);
+        }
+
+        //챌린지 찾아오기
+        Challenge findChallenge = challengeService.findOne(id);
+
+        try {
+            participantService.savePayment(paymentReqDTO.getP_price(), loginMember, findChallenge);
+            response.put("response","성공적으로 결제되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("response","잘못된 접근입니다");
+            return ResponseEntity.ok(response);
+        }
+
+
+    }
+
+
+
 
 }

@@ -3,6 +3,7 @@ package challenges.challenges.service.participant_challenge;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.domain.ParticipantChallenge;
+import challenges.challenges.domain.Payment;
 import challenges.challenges.repository.participant_challenge.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,20 @@ public class ParticipantService {
         List<Challenge> participantChallengeList = participantRepository.findParticipantListByMember(loginMember);
         return participantChallengeList;
     }
+
+    /**
+     * 결제시 작동하는 메서드
+     */
+    @Transactional
+    public void savePayment(int price, Member member, Challenge challenge) {
+        ParticipantChallenge findParticipantChallenge = participantRepository.findParticipantChallengeByChallengeAndMember(challenge, member);
+        Payment payment = Payment.createPayment(price, findParticipantChallenge);
+        participantRepository.savePayment(payment);
+
+        //챌린지의 토탈 가격도 올려줘야함
+        challenge.addTotalPrice(price);
+    }
+
 
 
 }

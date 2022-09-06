@@ -49,6 +49,7 @@ import java.util.UUID;
  * 좋아요 한 챌린지 넘겨주기(완료) - 프론트 미완료
  * 내가 단 댓글 마이페이지에 띄우기(DTO 빼고 완료)
  * 기부하기(미완료)
+ * 내가 기부한 내역 띄워주기(미완료)
  *
  */
 
@@ -132,7 +133,7 @@ public class ChallengeController {
     /**
      * END 상태인 챌린지 리스트들을 보내주는 메소드
      */
-    //미완료
+    //완료
     @GetMapping("challenge/list/end")
     public ResponseEntity<List<Challenge>> endChallengeList() {
         List<Challenge> endChallengeList = challengeService.endChallengeList();
@@ -331,7 +332,7 @@ public class ChallengeController {
     /**
      * 챌린지에 동영상 및 댓글 업로드
      */
-    //미완료
+    //완료
     @PostMapping("/challenge/{id}/reply")
     public ResponseEntity<?> uploadReply(@PathVariable Long id,
                                          @RequestPart(value = "file", required = false) MultipartFile multipartFile,
@@ -401,7 +402,7 @@ public class ChallengeController {
     /**
      * 댓글 리스트 프론트엔드에 보내주기
      */
-    //미완료
+    //완료
     @GetMapping("/challenge/{id}/replyList")
     public ResponseEntity<List<ReplyListDTO>> replyList(@PathVariable Long id) {
         Challenge challenge = challengeService.findOne(id);
@@ -515,7 +516,7 @@ public class ChallengeController {
     /**
      * 특정 멤버가 좋아요한 챌린지 리스트
      */
-    //미완료
+    //완료
     @GetMapping("/mypage/challenges/like")
     public ResponseEntity<?> getLikeChallengeByMember(HttpServletRequest request) {
         HashMap<String, String> response = new HashMap<>();
@@ -569,7 +570,6 @@ public class ChallengeController {
 
         List<Reply> challengeList = replyService.getReplyChallengeByMember(loginMember);
         return ResponseEntity.ok(challengeList);
-
     }
 
 

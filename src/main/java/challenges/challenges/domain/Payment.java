@@ -3,10 +3,8 @@ package challenges.challenges.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter @Setter
@@ -18,5 +16,19 @@ public class Payment {
 
     private int p_price;
 
-    //결제수단이랑 결제 여부 같은거 해야함
+    private LocalDate p_paymentTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "participantChallenge_id")
+    private ParticipantChallenge participantChallenge;
+
+
+    public static Payment createPayment(int p_price, ParticipantChallenge participantChallenge) {
+        Payment payment = new Payment();
+        payment.setP_paymentTime(LocalDate.now());
+        payment.setP_price(p_price);
+        payment.setParticipantChallenge(participantChallenge);
+        return payment;
+    }
+
 }

@@ -96,4 +96,8 @@ public class Challenge {
         this.c_challengers -= 1;
     }
 
+    public void addTotalPrice(int price) {
+        this.c_price += price;
+    }
+
 }

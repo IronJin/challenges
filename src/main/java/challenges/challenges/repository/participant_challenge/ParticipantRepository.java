@@ -3,6 +3,7 @@ package challenges.challenges.repository.participant_challenge;
 import challenges.challenges.domain.Challenge;
 import challenges.challenges.domain.Member;
 import challenges.challenges.domain.ParticipantChallenge;
+import challenges.challenges.domain.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +36,24 @@ public class ParticipantRepository {
         List<Challenge> participantChallengeList = query.getResultList();
         return participantChallengeList;
     }
+
+    /**
+     * 멤버와 챌린지로 참가 챌린지 테이블 값 가져오기
+     */
+    public ParticipantChallenge findParticipantChallengeByChallengeAndMember(Challenge challenge, Member member) {
+        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT ParticipantChallenge pc where pc.pc_member = :loginMember and pc.pc_challenge = :challenge", ParticipantChallenge.class);
+        query.setParameter("member",member);
+        query.setParameter("challenge",challenge);
+        return query.getSingleResult();
+    }
+
+    /**
+     * 결제이력을 저장해줌
+     */
+    public void savePayment(Payment payment) {
+        em.persist(payment);
+    }
+
 
 
 }
