@@ -8,4 +8,6 @@ public class PaymentReqDTO {
 
     private int p_price;
 
+    private String imp_uid;
+
 }

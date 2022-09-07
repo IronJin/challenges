@@ -6,6 +6,8 @@ import challenges.challenges.domain.Member;
 import challenges.challenges.service.challenge.ChallengeService;
 import challenges.challenges.service.member.MemberService;
 import challenges.challenges.service.participant_challenge.ParticipantService;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.request.CancelData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ public class ParticipantController {
     private final ParticipantService participantService;
     private final MemberService memberService;
     private final ChallengeService challengeService;
+    private final IamportClient iamportClient;
 
     /**
      * 챌린지 참가 버튼을 눌렀을 때 작동하는 메서드
@@ -84,6 +87,7 @@ public class ParticipantController {
         long status = participantService.checkParticipationStatus(findChallenge, loginMember);
         if(status == 0) {
             response.put("response",0);
+
             return ResponseEntity.ok(response);
         }
 
@@ -91,47 +95,47 @@ public class ParticipantController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 결제완료창 - 결제 완료가 되었으므로 DB에 값을 넣음
-     */
-    @PostMapping("/challenge/{id}/payment")
-    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
 
-        HashMap<String, String> response = new HashMap<>();
+//    /**
+//     * 결제완료창 - 결제 완료가 되었으므로 DB에 값을 넣음
+//     */
+//    @PostMapping("/challenge/{id}/payment")
+//    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
+//
+//        HashMap<String, String> response = new HashMap<>();
+//
+//        HttpSession session = request.getSession(false);
+//        CancelData cancelData = new CancelData(paymentReqDTO.getImp_uid(), true);
+//
+//        if(session == null) {
+//            response.put("response","로그인을 해야합니다.");
+//            return ResponseEntity.ok(response);
+//        }
+//
+//        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+//        if(loginMember == null) {
+//            response.put("response","로그인을 다시 해야합니다");
+//
+//            return ResponseEntity.ok(response);
+//        }
+//
+//        //챌린지 찾아오기
+//        Challenge findChallenge = challengeService.findOne(id);
+//
+//        //verifyIamport에서 세션을 만들어서 여기서 검증한 후 없애줘야함
+//        //여긴 결제승인을 한곳이 아니므로 잘못된 결제먼저해달라고하면됨
+//
+//        try {
+//            participantService.savePayment(paymentReqDTO.getImp_uid() ,paymentReqDTO.getP_price(), loginMember, findChallenge);
+//            response.put("response","1");
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            response.put("response","잘못된 접근입니다");
+//            return ResponseEntity.ok(response);
+//        }
+//
+//    }
 
-        HttpSession session = request.getSession(false);
-
-        if(session == null) {
-            response.put("response","로그인을 해야합니다.");
-            return ResponseEntity.ok(response);
-        }
-
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if(loginMember == null) {
-            response.put("response","로그인을 다시 해야합니다");
-            return ResponseEntity.ok(response);
-        }
-
-        //챌린지 찾아오기
-        Challenge findChallenge = challengeService.findOne(id);
-
-        //verifyIamport에서 세션을 만들어서 여기서 검증한 후 없애줘야함
-
-        try {
-            participantService.savePayment(paymentReqDTO.getP_price(), loginMember, findChallenge);
-            response.put("response","1");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("response","잘못된 접근입니다");
-            return ResponseEntity.ok(response);
-        }
-
-    }
-
-//    결제버튼 누르고 페이먼트페이지로 일단 온다음 검증햇을때 일치하지 않으면 실패했습니다 창 띄워주기
-//    결제버튼 누르고 바로 결제되지말고 페이먼트로 넘어왔을때 내가 정상적인 값을 줘야만 그때서야 실행되는것임
-
-
-
-
+    //결제버튼 누르고 페이먼트페이지로 일단 온다음 검증햇을때 일치하지 않으면 실패했습니다 창 띄워주기
+    //결제버튼 누르고 바로 결제되지말고 페이먼트로 넘어왔을때 내가 정상적인 값을 줘야만 그때서야 실행되는것임
 }

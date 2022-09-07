@@ -42,9 +42,9 @@ public class ParticipantService {
      * 결제시 작동하는 메서드
      */
     @Transactional
-    public void savePayment(int price, Member member, Challenge challenge) {
+    public void savePayment(String imp_uid, int price, Member member, Challenge challenge) {
         ParticipantChallenge findParticipantChallenge = participantRepository.findParticipantChallengeByChallengeAndMember(challenge, member);
-        Payment payment = Payment.createPayment(price, findParticipantChallenge);
+        Payment payment = Payment.createPayment(imp_uid ,price, findParticipantChallenge);
         participantRepository.savePayment(payment);
         log.info("-------------------------------------------price : {}",price);
         //챌린지와 참여중인 챌린지의 토탈 가격도 올려줘야함
