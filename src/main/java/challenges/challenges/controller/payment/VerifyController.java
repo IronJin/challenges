@@ -13,7 +13,9 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +24,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @Slf4j
-@RequiredArgsConstructor
-@RestController
+//@RequiredArgsConstructor
+@Controller
 @RequestMapping("/verifyIamport")
 public class VerifyController {
 
@@ -34,10 +36,11 @@ public class VerifyController {
 
 
     // 생성자를 통해 REST API 와 REST API secret 입력
+    @Autowired
     public VerifyController(ParticipantService participantService, ChallengeService challengeService){
         this.iamportClient = new IamportClient("...", "...");
-        this.participantService = participantService;
         this.challengeService = challengeService;
+        this.participantService = participantService;
     }
 
 

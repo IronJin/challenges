@@ -28,7 +28,6 @@ public class ParticipantController {
     private final ParticipantService participantService;
     private final MemberService memberService;
     private final ChallengeService challengeService;
-    private final IamportClient iamportClient;
 
     /**
      * 챌린지 참가 버튼을 눌렀을 때 작동하는 메서드
