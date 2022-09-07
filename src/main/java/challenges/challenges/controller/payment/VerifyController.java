@@ -31,6 +31,8 @@ public class VerifyController {
     private final ParticipantService participantService;
     private final ChallengeService challengeService;
 
+
+
     // 생성자를 통해 REST API 와 REST API secret 입력
     public VerifyController(ParticipantService participantService, ChallengeService challengeService){
         this.iamportClient = new IamportClient("...", "...");
