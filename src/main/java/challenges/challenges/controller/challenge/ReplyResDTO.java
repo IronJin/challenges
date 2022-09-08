@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class ReplyResDTO {
 
+    private Long r_id;
+
     private LocalDateTime r_localDateTime;
 
     private String r_title;

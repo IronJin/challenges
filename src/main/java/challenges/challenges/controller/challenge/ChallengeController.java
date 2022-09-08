@@ -54,6 +54,7 @@ import java.util.UUID;
  * 내가 단 댓글 마이페이지에 띄우기(DTO 빼고 완료)
  * 기부하기(미완료)
  * 내가 기부한 내역 띄워주기(미완료)
+ * 댓글 지우기
  *
  */
 
@@ -605,13 +606,12 @@ public class ChallengeController {
             replyResDTO.setR_title(reply.getR_challenge().getC_title());
             replyResDTO.setR_localDateTime(reply.getR_localDateTime());
             replyResDTO.setR_detail(reply.getR_detail());
+            replyResDTO.setR_id(reply.getId());
             replyResDTOList.add(replyResDTO);
         }
 
         return ResponseEntity.ok(replyResDTOList);
     }
-
-
 
 
 
