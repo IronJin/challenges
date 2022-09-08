@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
@@ -31,6 +32,8 @@ public class Reply {
     @JsonIgnore
     private Challenge r_challenge;
 
+    private LocalDateTime r_localDateTime;
+
     public static Reply createReply(String r_detail, String r_fileName, String r_filePath, Member member, Challenge challenge) {
 
         Reply reply = new Reply();
@@ -40,7 +43,7 @@ public class Reply {
         reply.setR_filePath(r_filePath);
         reply.setR_member(member);
         reply.setR_challenge(challenge);
-
+        reply.setR_localDateTime(LocalDateTime.now());
         return reply;
     }
 

@@ -577,8 +577,6 @@ public class ChallengeController {
 
     /**
      * 특정 멤버가 댓글을 단 챌린지 리스트 중복허용
-     *
-     * ***************추후 마이페이지에 어떻게 띄울것인지를 상의한 후에 DTO 를 만들어 필요한 정보를 담고 넘겨줄 것임 , 일단은 챌린지와 페지조인하여 댓글 정보를 데베에서 가져오는 작업을 수행했음
      */
     //미완료
     @GetMapping("/mypage/challenges/reply")
@@ -598,9 +596,21 @@ public class ChallengeController {
             return ResponseEntity.ok(response);
         }
 
-        List<Reply> challengeList = replyService.getReplyChallengeByMember(loginMember);
-        return ResponseEntity.ok(challengeList);
+        List<Reply> replyList = replyService.getReplyChallengeByMember(loginMember);
+
+        List<ReplyResDTO> replyResDTOList = new ArrayList<>();
+        for (Reply reply : replyList) {
+            ReplyResDTO replyResDTO = new ReplyResDTO();
+            replyResDTO.setR_donation_destination(reply.getR_challenge().getC_donation_destination());
+            replyResDTO.setR_title(reply.getR_challenge().getC_title());
+            replyResDTO.setR_localDateTime(reply.getR_localDateTime());
+            replyResDTO.setR_detail(reply.getR_detail());
+            replyResDTOList.add(replyResDTO);
+        }
+
+        return ResponseEntity.ok(replyResDTOList);
     }
+
 
 
 
