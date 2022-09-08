@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/verifyIamport")
 public class VerifyController {
 
@@ -36,7 +36,7 @@ public class VerifyController {
 
 
     // 생성자를 통해 REST API 와 REST API secret 입력
-    public VerifyController(ParticipantService participantService, ChallengeService challengeService){
+    public VerifyController() {
         this.iamportClient = new IamportClient("...", "...");
 //        this.challengeService = challengeService;
 //        this.participantService = participantService;
