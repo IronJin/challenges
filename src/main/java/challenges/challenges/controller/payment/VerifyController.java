@@ -73,6 +73,7 @@ public class VerifyController {
                 iamportClient.cancelPaymentByImpUid(cancelData);
             } catch (IamportResponseException e) {
                 log.info("아임포트리스폰스예외 생김");
+                log.info("제발 되게 해주세요");
             } catch (IOException e) {
                 log.info("알수없는 예외 생김");
             }
