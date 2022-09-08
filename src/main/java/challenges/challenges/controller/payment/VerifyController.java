@@ -26,6 +26,7 @@ import java.util.HashMap;
 @Slf4j
 //@RequiredArgsConstructor
 @Controller
+@RequestMapping("/verifyIamport")
 public class VerifyController {
 
     private final IamportClient iamportClient;
@@ -43,73 +44,71 @@ public class VerifyController {
     }
 
 
-    @PostMapping("/verifyIamport/{imp_uid}")
+    @PostMapping("/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         log.info("paymentByImpUid 진입");
         return iamportClient.paymentByImpUid(imp_uid);
-//        CancelData cancelData = new CancelData(imp_uid, true);
-//        iamportClient.cancelPaymentByImpUid(cancelData);
     }
 
-    @PostMapping("/challenge/{id}/payment")
-    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
-
-        log.info("여기에 진입했노?");
-
-        HashMap<String, String> response = new HashMap<>();
-
-        HttpSession session = request.getSession(false);
-        CancelData cancelData = new CancelData(paymentReqDTO.getImp_uid(), true);
-
-        if(session == null) {
-            response.put("response","로그인을 해야합니다.");
-            return ResponseEntity.ok(response);
-        }
-
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        if(loginMember == null) {
-            response.put("response","로그인을 다시 해야합니다");
-
-            try {
-                iamportClient.cancelPaymentByImpUid(cancelData);
-            } catch (IamportResponseException e) {
-                log.info("아임포트리스폰스예외 생김");
-                log.info("제발 되게 해주세요");
-            } catch (IOException e) {
-                log.info("알수없는 예외 생김");
-            }
-            return ResponseEntity.ok(response);
-        }
-
-        //챌린지 찾아오기
-        Challenge findChallenge = challengeService.findOne(id);
-
-        //verifyIamport에서 세션을 만들어서 여기서 검증한 후 없애줘야함
-        //여긴 결제승인을 한곳이 아니므로 잘못된 결제먼저해달라고하면됨
-
-        try {
-            iamportClient.cancelPaymentByImpUid(cancelData);
-            response.put("response","1");
-            return ResponseEntity.ok(response);
-        } catch (IamportResponseException e) {
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-        try {
-            participantService.savePayment(paymentReqDTO.getImp_uid() ,paymentReqDTO.getP_price(), loginMember, findChallenge);
-            response.put("response","1");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("response","잘못된 접근입니다");
-            return ResponseEntity.ok(response);
-        }
-
-    }
+//    @PostMapping("/challenge/{id}/payment")
+//    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
+//
+//        log.info("여기에 진입했노?");
+//
+//        HashMap<String, String> response = new HashMap<>();
+//
+//        HttpSession session = request.getSession(false);
+//        CancelData cancelData = new CancelData(paymentReqDTO.getImp_uid(), true);
+//
+//        if(session == null) {
+//            response.put("response","로그인을 해야합니다.");
+//            return ResponseEntity.ok(response);
+//        }
+//
+//        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+//
+//        if(loginMember == null) {
+//            response.put("response","로그인을 다시 해야합니다");
+//
+//            try {
+//                iamportClient.cancelPaymentByImpUid(cancelData);
+//            } catch (IamportResponseException e) {
+//                log.info("아임포트리스폰스예외 생김");
+//                log.info("제발 되게 해주세요");
+//            } catch (IOException e) {
+//                log.info("알수없는 예외 생김");
+//            }
+//            return ResponseEntity.ok(response);
+//        }
+//
+//        //챌린지 찾아오기
+//        Challenge findChallenge = challengeService.findOne(id);
+//
+//        //verifyIamport에서 세션을 만들어서 여기서 검증한 후 없애줘야함
+//        //여긴 결제승인을 한곳이 아니므로 잘못된 결제먼저해달라고하면됨
+//
+//        try {
+//            iamportClient.cancelPaymentByImpUid(cancelData);
+//            response.put("response","1");
+//            return ResponseEntity.ok(response);
+//        } catch (IamportResponseException e) {
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//        try {
+//            participantService.savePayment(paymentReqDTO.getImp_uid() ,paymentReqDTO.getP_price(), loginMember, findChallenge);
+//            response.put("response","1");
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            response.put("response","잘못된 접근입니다");
+//            return ResponseEntity.ok(response);
+//        }
+//
+//    }
 
 
 }
