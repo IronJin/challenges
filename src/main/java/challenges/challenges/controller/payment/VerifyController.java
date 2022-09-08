@@ -26,7 +26,6 @@ import java.util.HashMap;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/verifyIamport")
 public class VerifyController {
 
     private final IamportClient iamportClient;
@@ -44,7 +43,7 @@ public class VerifyController {
     }
 
 
-    @PostMapping("/{imp_uid}")
+    @PostMapping("/verifyIamport/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         log.info("paymentByImpUid 진입");
         return iamportClient.paymentByImpUid(imp_uid);
