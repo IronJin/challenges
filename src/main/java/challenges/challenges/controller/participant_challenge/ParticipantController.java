@@ -7,6 +7,7 @@ import challenges.challenges.service.challenge.ChallengeService;
 import challenges.challenges.service.member.MemberService;
 import challenges.challenges.service.participant_challenge.ParticipantService;
 import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 
 @Controller
@@ -28,6 +30,7 @@ public class ParticipantController {
     private final ParticipantService participantService;
     private final MemberService memberService;
     private final ChallengeService challengeService;
+    private final IamportClient iamportClient;
 
     /**
      * 챌린지 참가 버튼을 눌렀을 때 작동하는 메서드
@@ -99,7 +102,7 @@ public class ParticipantController {
      * 결제완료창 - 결제 완료가 되었으므로 DB에 값을 넣음
      */
     @PostMapping("/challenge/{id}/payment")
-    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
+    public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) throws IamportResponseException, IOException {
 
         HashMap<String, String> response = new HashMap<>();
 
@@ -117,6 +120,10 @@ public class ParticipantController {
 
             return ResponseEntity.ok(response);
         }
+
+        log.info("여기까지왔냐?");
+        iamportClient.cancelPaymentByImpUid(cancelData);
+        log.info("취소되야하는데");
 
         //챌린지 찾아오기
         Challenge findChallenge = challengeService.findOne(id);
