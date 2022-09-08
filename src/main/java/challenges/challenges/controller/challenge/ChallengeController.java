@@ -6,9 +6,13 @@ import challenges.challenges.service.challenge.ChallengeService;
 
 import challenges.challenges.service.participant_challenge.ParticipantService;
 import challenges.challenges.service.reply.ReplyService;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -61,6 +65,15 @@ public class ChallengeController {
     private final ChallengeService challengeService;
     private final ParticipantService participantService;
     private final ReplyService replyService;
+    private final IamportClient iamportClient;
+
+    @Autowired
+    public ChallengeController(ParticipantService participantService, ChallengeService challengeService, ReplyService replyService) {
+        this.iamportClient = new IamportClient("...", "...");
+        this.challengeService = challengeService;
+        this.participantService = participantService;
+        this.replyService = replyService;
+    }
 
     private static String Path = "C:/KBBankStorage/";
 
@@ -252,7 +265,7 @@ public class ChallengeController {
      */
     //완료
     @PostMapping("/challenge/{id}/delete")
-    public ResponseEntity<?> deleteChallenge(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<?> deleteChallenge(@PathVariable Long id, HttpServletRequest request) throws IamportResponseException, IOException {
 
         HashMap<String, String> response = new HashMap<>();
 
@@ -278,6 +291,21 @@ public class ChallengeController {
         }
 
         //여기서부터는 성공로직
+
+        //일단 환불절차를 다 진행을 해주어야 한다.
+        //삭제할 챌린지를 가지고 있는 파티시팬트 챌린지를 다 가져오고 파티시팬트의 페이먼트를 가지고 있는 페이먼트 정보를 다 가져온다.
+        //그리고 삭제를 해준다.
+        List<ParticipantChallenge> participantChallengeList = participantService.findParticipantListByChallenge(challenge);
+        for (ParticipantChallenge participantChallenge : participantChallengeList) {
+            //파티시팬트를 갖고 있는 페이먼트의 정보 모두 가져오기
+            List<Payment> paymentList = participantService.findPaymentList(participantChallenge);
+            for (Payment payment : paymentList) {
+                //캔슬 데이터 생성
+                CancelData cancelData = new CancelData(payment.getImp_uid(),true);
+                iamportClient.cancelPaymentByImpUid(cancelData);
+            }
+        }
+
         challengeService.deleteChallenge(challenge);
         response.put("response","success");
         return ResponseEntity.ok(response);

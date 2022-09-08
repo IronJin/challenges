@@ -48,6 +48,24 @@ public class ParticipantRepository {
     }
 
     /**
+     * 챌린지로 참가 챌린지 테이블 값 가져오기
+     */
+    public List<ParticipantChallenge> findParticipantChallengeByChallenge(Challenge challenge) {
+        TypedQuery<ParticipantChallenge> query = em.createQuery("SELECT pc FROM ParticipantChallenge pc WHERE pc.pc_challenge = :challenge", ParticipantChallenge.class);
+        query.setParameter("challenge",challenge);
+        return query.getResultList();
+    }
+
+    /**
+     * 참가챌린지로 페이먼트 다 긁어오기
+     */
+    public List<Payment> findPaymentListByParticipantChallenge(ParticipantChallenge participantChallenge) {
+        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p WHERE p.participantChallenge = :participantChallenge", Payment.class);
+        query.setParameter("participantChallenge", participantChallenge);
+        return query.getResultList();
+    }
+
+    /**
      * 결제이력을 저장해줌
      */
     public void savePayment(Payment payment) {

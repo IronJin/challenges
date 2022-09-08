@@ -39,6 +39,14 @@ public class ParticipantService {
     }
 
     /**
+     * 챌린지로 참가 챌린지 테이블 리스트 가져오기
+     */
+    public List<ParticipantChallenge> findParticipantListByChallenge(Challenge challenge) {
+        List<ParticipantChallenge> participantChallengeList = participantRepository.findParticipantChallengeByChallenge(challenge);
+        return participantChallengeList;
+    }
+
+    /**
      * 결제시 작동하는 메서드
      */
     @Transactional
@@ -50,6 +58,14 @@ public class ParticipantService {
         //챌린지와 참여중인 챌린지의 토탈 가격도 올려줘야함
         findParticipantChallenge.addPrice(price);
         challenge.addTotalPrice(price);
+    }
+
+    /**
+     * 참가챌린지로 페이먼트 정보 다 긁어오기
+     */
+    public List<Payment> findPaymentList(ParticipantChallenge participantChallenge) {
+        List<Payment> paymentList = participantRepository.findPaymentListByParticipantChallenge(participantChallenge);
+        return paymentList;
     }
 
 
