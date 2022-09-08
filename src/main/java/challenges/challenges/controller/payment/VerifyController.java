@@ -54,6 +54,8 @@ public class VerifyController {
     @PostMapping("/challenge/{id}/payment")
     public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) {
 
+        log.info("여기에 진입했노?");
+
         HashMap<String, String> response = new HashMap<>();
 
         HttpSession session = request.getSession(false);
