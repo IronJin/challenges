@@ -72,6 +72,14 @@ public class ParticipantRepository {
         em.persist(payment);
     }
 
+    /**
+     * 페이먼트 삭제하기
+     */
+    public void deletePayment(Payment payment) {
+        Payment findPayment = em.find(Payment.class, payment.getId());
+        em.remove(findPayment);
+    }
+
 
 
 }

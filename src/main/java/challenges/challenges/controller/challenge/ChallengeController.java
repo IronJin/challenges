@@ -303,6 +303,8 @@ public class ChallengeController {
                 //캔슬 데이터 생성
                 CancelData cancelData = new CancelData(payment.getImp_uid(),true);
                 iamportClient.cancelPaymentByImpUid(cancelData);
+                //페이먼트 삭제해주기
+                participantService.deletePayment(payment);
             }
         }
 

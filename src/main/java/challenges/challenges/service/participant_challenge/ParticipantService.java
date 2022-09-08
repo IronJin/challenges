@@ -68,6 +68,14 @@ public class ParticipantService {
         return paymentList;
     }
 
+    /**
+     * 페이먼트 삭제하기
+     */
+    @Transactional
+    public void deletePayment(Payment payment) {
+        participantRepository.deletePayment(payment);
+    }
+
 
 
 }
