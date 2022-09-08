@@ -30,7 +30,7 @@ public class ParticipantController {
     private final ParticipantService participantService;
     private final MemberService memberService;
     private final ChallengeService challengeService;
-    private final IamportClient iamportClient;
+//    private final IamportClient iamportClient;
 
     /**
      * 챌린지 참가 버튼을 눌렀을 때 작동하는 메서드
@@ -120,10 +120,10 @@ public class ParticipantController {
 
             return ResponseEntity.ok(response);
         }
-
-        log.info("여기까지왔냐?");
-        iamportClient.cancelPaymentByImpUid(cancelData);
-        log.info("취소되야하는데");
+//
+//        log.info("여기까지왔냐?");
+//        iamportClient.cancelPaymentByImpUid(cancelData);
+//        log.info("취소되야하는데");
 
         //챌린지 찾아오기
         Challenge findChallenge = challengeService.findOne(id);
