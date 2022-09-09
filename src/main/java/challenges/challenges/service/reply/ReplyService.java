@@ -27,4 +27,14 @@ public class ReplyService {
         return challengeList;
     }
 
+    public Reply findReplyById(Long id) {
+        Reply reply = replyRepository.findReplyById(id);
+        return reply;
+    }
+
+    @Transactional
+    public void deleteReply(Reply reply) {
+        replyRepository.deleteReply(reply);
+    }
+
 }

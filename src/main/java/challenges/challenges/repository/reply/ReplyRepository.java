@@ -31,4 +31,19 @@ public class ReplyRepository {
         return challengeList;
     }
 
+    /**
+     * id 로 댓글하나 찾아오기
+     */
+    public Reply findReplyById(Long id) {
+        Reply reply = em.find(Reply.class, id);
+        return reply;
+    }
+
+    /**
+     * 댓글 하나 삭제하기
+     */
+    public void deleteReply(Reply reply) {
+        em.remove(reply);
+    }
+
 }

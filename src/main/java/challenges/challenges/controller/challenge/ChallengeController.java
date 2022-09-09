@@ -650,6 +650,42 @@ public class ChallengeController {
 
     }
 
+    /**
+     * 댓글 삭제하기
+     * 삭제하려는 댓글을 id 로 가져온다
+     */
+    @PostMapping("/delete/reply/{id}")
+    public ResponseEntity<?> deleteReply(@PathVariable Long id, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        HashMap<String, String> response = new HashMap<>();
+
+        if(session == null) {
+            response.put("response","잘못된 접근입니다");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해야합니다");
+            return ResponseEntity.ok(response);
+        }
+
+        //댓글 가져오기
+        Reply reply = replyService.findReplyById(id);
+
+        if(!reply.getR_member().equals(loginMember)) {
+            response.put("response","잘못된 접근입니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        //여기서부터는 성공로직
+        replyService.deleteReply(reply);
+        response.put("response","성공적으로 삭제되었습니다.");
+        return ResponseEntity.ok(response);
+    }
+
 
 
 
