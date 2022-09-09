@@ -1,5 +1,6 @@
 package challenges.challenges.controller.challenge;
 
+import challenges.challenges.controller.member.PaymentListDTO;
 import challenges.challenges.controller.member.SessionConst;
 import challenges.challenges.domain.*;
 import challenges.challenges.service.challenge.ChallengeService;
@@ -612,6 +613,43 @@ public class ChallengeController {
 
         return ResponseEntity.ok(replyResDTOList);
     }
+
+    /**
+     * 지금까지 내가 결제한 내역을 보여주는 메서드
+     */
+    @GetMapping("/mypage/challenges/payment")
+    public ResponseEntity<?> getPaymentList(HttpServletRequest request) {
+
+        HashMap<String,String> response = new HashMap<>();
+
+        HttpSession session = request.getSession(false);
+
+        if(session == null) {
+            response.put("response","로그인을 먼저 해야합니다");
+            return ResponseEntity.ok(response);
+        }
+
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember == null) {
+            response.put("response","로그인을 다시 해주세요");
+            return ResponseEntity.ok(response);
+        }
+
+        List<Payment> paymentList = challengeService.getMemberPaymentList(loginMember);
+        List<PaymentListDTO> paymentListDTOList = new ArrayList<>();
+        for (Payment payment : paymentList) {
+            PaymentListDTO paymentListDTO = new PaymentListDTO();
+            paymentListDTO.setP_paymentDate(payment.getP_paymentTime());
+            paymentListDTO.setP_challengeId(payment.getParticipantChallenge().getPc_challenge().getId());
+            paymentListDTO.setP_challengeName(payment.getParticipantChallenge().getPc_challenge().getC_title());
+            paymentListDTO.setP_price(payment.getP_price());
+            paymentListDTOList.add(paymentListDTO);
+        }
+
+        return ResponseEntity.ok(paymentListDTOList);
+
+    }
+
 
 
 

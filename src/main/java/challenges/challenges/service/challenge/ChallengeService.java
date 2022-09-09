@@ -122,5 +122,10 @@ public class ChallengeService {
         return heartsList;
     }
 
+    public List<Payment> getMemberPaymentList(Member member) {
+        List<Payment> paymentList = challengeRepository.getMemberPaymentList(member);
+        return paymentList;
+    }
+
 
 }

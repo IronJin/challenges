@@ -1,10 +1,7 @@
 package challenges.challenges.repository.challenge;
 
 import challenges.challenges.controller.challenge.UpdateChallengeDTO;
-import challenges.challenges.domain.Challenge;
-import challenges.challenges.domain.Hearts;
-import challenges.challenges.domain.Member;
-import challenges.challenges.domain.Reply;
+import challenges.challenges.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -112,6 +109,16 @@ public class ChallengeRepository {
         query.setParameter("member",member);
         List<Hearts> heartsList = query.getResultList();
         return heartsList;
+    }
+
+    /**
+     * 마이페이지에 결제리스트 띄우기
+     */
+    public List<Payment> getMemberPaymentList(Member member) {
+        TypedQuery<Payment> query = em.createQuery("SELECT p FROM Payment p, ParticipantChallenge pc, Challenge c WHERE pc.pc_member = :member and p.participantChallenge = pc and pc.pc_challenge = c",Payment.class);
+        query.setParameter("member",member);
+        List<Payment> paymentList = query.getResultList();
+        return paymentList;
     }
 
 
