@@ -31,6 +31,7 @@ public class Member {
     private String m_loginId;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String m_password;
 
     @Column(nullable = false)
