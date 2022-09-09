@@ -675,7 +675,7 @@ public class ChallengeController {
         //댓글 가져오기
         Reply reply = replyService.findReplyById(id);
 
-        if(!reply.getR_member().equals(loginMember)) {
+        if(!reply.getR_member().getM_id().equals(loginMember.getM_id())) {
             response.put("response","잘못된 접근입니다.");
             return ResponseEntity.ok(response);
         }

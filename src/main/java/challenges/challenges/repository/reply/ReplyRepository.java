@@ -35,7 +35,10 @@ public class ReplyRepository {
      * id 로 댓글하나 찾아오기
      */
     public Reply findReplyById(Long id) {
-        Reply reply = em.find(Reply.class, id);
+        Reply findReply = em.find(Reply.class, id);
+        TypedQuery<Reply> query = em.createQuery("SELECT r FROM Reply r join fetch r.r_member WHERE r = :findReply", Reply.class);
+        query.setParameter("findReply",findReply);
+        Reply reply = query.getSingleResult();
         return reply;
     }
 
