@@ -637,13 +637,18 @@ public class ChallengeController {
 
         List<Payment> paymentList = challengeService.getMemberPaymentList(loginMember);
         List<PaymentListDTO> paymentListDTOList = new ArrayList<>();
+
+        Long index = 1L;
+
         for (Payment payment : paymentList) {
             PaymentListDTO paymentListDTO = new PaymentListDTO();
+            paymentListDTO.setP_trash(index);
             paymentListDTO.setP_paymentDate(payment.getP_paymentTime());
             paymentListDTO.setP_challengeId(payment.getParticipantChallenge().getPc_challenge().getId());
             paymentListDTO.setP_challengeName(payment.getParticipantChallenge().getPc_challenge().getC_title());
             paymentListDTO.setP_price(payment.getP_price());
             paymentListDTOList.add(paymentListDTO);
+            index++;
         }
 
         return ResponseEntity.ok(paymentListDTOList);

@@ -20,4 +20,6 @@ public class PaymentListDTO {
     //기부금액
     private int p_price;
 
+    private Long p_trash;
+
 }

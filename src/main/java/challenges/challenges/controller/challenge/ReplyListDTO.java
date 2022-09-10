@@ -16,4 +16,6 @@ public class ReplyListDTO {
 
     private String r_member;
 
+
+
 }
