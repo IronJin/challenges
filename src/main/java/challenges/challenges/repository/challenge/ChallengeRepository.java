@@ -121,6 +121,26 @@ public class ChallengeRepository {
         return paymentList;
     }
 
+    /**
+     * 좋아요 DESC 순으로 8개 넘겨주기
+     */
+    public List<Challenge> getChallengeLikeDesc() {
+        TypedQuery<Challenge> query = em.createQuery("SELECT c FROM Challenge c ORDER BY c.c_hearts DESC", Challenge.class);
+        query.setMaxResults(8);
+        List<Challenge> challengeList = query.getResultList();
+        return challengeList;
+    }
+
+    /**
+     * 챌린지 title 로 검색쿼리 작성하기
+     */
+    public List<Challenge> getChallengeListByTitle(String keyword) {
+        TypedQuery<Challenge> query = em.createQuery("SELECT c FROM Challenge c WHERE c.c_title LIKE %:keyword%", Challenge.class);
+        query.setParameter("keyword",keyword);
+        List<Challenge> challengeList = query.getResultList();
+        return challengeList;
+    }
+
 
 
 }

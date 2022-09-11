@@ -127,5 +127,21 @@ public class ChallengeService {
         return paymentList;
     }
 
+    /**
+     * 좋아요 순으로 챌린지 8개까지 가져오기
+     */
+    public List<Challenge> getChallengeLikeDesc() {
+        List<Challenge> challengeList = challengeRepository.getChallengeLikeDesc();
+        return challengeList;
+    }
+
+    /**
+     * 제목으로 챌린지 검색하기
+     */
+    public List<Challenge> getChallengeListByTitle(String keyword) {
+        List<Challenge> challengeList = challengeRepository.getChallengeListByTitle(keyword);
+        return challengeList;
+    }
+
 
 }

@@ -3,6 +3,7 @@ package challenges.challenges.controller.challenge;
 import challenges.challenges.controller.member.PaymentListDTO;
 import challenges.challenges.controller.member.SessionConst;
 import challenges.challenges.domain.*;
+import challenges.challenges.repository.challenge.ChallengeSearchRepository;
 import challenges.challenges.service.challenge.ChallengeService;
 
 import challenges.challenges.service.participant_challenge.ParticipantService;
@@ -68,13 +69,15 @@ public class ChallengeController {
     private final ParticipantService participantService;
     private final ReplyService replyService;
     private final IamportClient iamportClient;
+    private final ChallengeSearchRepository challengeSearchRepository;
 
     @Autowired
-    public ChallengeController(ParticipantService participantService, ChallengeService challengeService, ReplyService replyService) {
+    public ChallengeController(ParticipantService participantService, ChallengeService challengeService, ReplyService replyService, ChallengeSearchRepository challengeSearchRepository) {
         this.iamportClient = new IamportClient("...", "...");
         this.challengeService = challengeService;
         this.participantService = participantService;
         this.replyService = replyService;
+        this.challengeSearchRepository = challengeSearchRepository;
     }
 
     private static String Path = "C:/KBBankStorage/";
@@ -690,6 +693,27 @@ public class ChallengeController {
         response.put("response","성공적으로 삭제되었습니다.");
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 메인페이지에 챌린지의 좋아요 DESC 순으로 8개 넘겨주기
+     */
+    @GetMapping("/main/challenges")
+    public ResponseEntity<?> getChallengesLikeDesc() {
+        List<Challenge> challengeList = challengeService.getChallengeLikeDesc();
+        return ResponseEntity.ok(challengeList);
+    }
+
+    /**
+     * 검색 쿼리 작성하기
+     */
+    @GetMapping("/search/challenge")
+    public ResponseEntity<List<Challenge>> getChallengesByTitle(@RequestParam(value = "keyword") String keyword) {
+
+        List<Challenge> challengeList = challengeSearchRepository.findByTitleContaining(keyword);
+
+        return ResponseEntity.ok(challengeList);
+    }
+
 
 
 
