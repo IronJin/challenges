@@ -714,6 +714,15 @@ public class ChallengeController {
         return ResponseEntity.ok(challengeList);
     }
 
+    /**
+     * 기부처를 받아서 기부처별 챌린지를 넘겨주는 메소드
+     */
+    @GetMapping("/category/challenge")
+    public ResponseEntity<List<Challenge>> getChallengesByDestination(@RequestParam(value = "destination") String destination) {
+        List<Challenge> challengeList = challengeSearchRepository.findByDestinationContaining(destination);
+        return ResponseEntity.ok(challengeList);
+    }
+
 
 
 
