@@ -56,7 +56,6 @@ import java.util.UUID;
  * 내가 단 댓글 마이페이지에 띄우기(완료)
  * 기부하기(완료)
  * 내가 기부한 내역 띄워주기(완료)
- * 댓글 지우기(미완료)
  *
  */
 
@@ -722,9 +721,5 @@ public class ChallengeController {
         List<Challenge> challengeList = challengeSearchRepository.findByDestinationContaining(destination);
         return ResponseEntity.ok(challengeList);
     }
-
-
-
-
 
 }

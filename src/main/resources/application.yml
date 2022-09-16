@@ -17,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -25,3 +25,9 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+
+server:
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 100MB
