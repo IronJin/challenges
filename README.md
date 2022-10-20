@@ -1,9 +1,13 @@
 # KB 국민은행 소프트웨어 경진대회_(도사)_도사들 백엔드 소스코드
-프론트엔드(React.js): https://github.com/Leekee0905/DonationChallenge
+
+프론트엔드(React.js): https://github.com/Leekee0905/DonationChallenge  
+시연영상 : https://www.youtube.com/watch?v=dLH32csWlbM
 
 # 목차
 * 백엔드 작업 내용
 * 프론트엔드 작업 내용
+
+-------
 
 # 백엔드 작업내용 (양철진)
 
