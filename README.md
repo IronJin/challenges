@@ -53,6 +53,8 @@ ERD 설계를 바탕으로 JPA 를 활용하여 Domain 객체 생성
 ## 검색기능 개발
 SpringData JPA 를 사용하여 기부처와 제목을 가지고 특정 챌린지를 검색할 수 있도록 설정 @Query 어노테이션과 검색용레포지토리 interface 를 활용하여 기능 개발
 
+* Bean Validation 과 Session , JsonIgnore 를 적극 사용
+
 --------------
 
 # 프론트엔드 (이기성)
