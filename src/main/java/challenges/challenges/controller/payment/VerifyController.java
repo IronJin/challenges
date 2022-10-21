@@ -34,7 +34,7 @@ public class VerifyController {
 
 
 
-    // 생성자를 통해 REST API 와 REST API secret 입력
+    //생성자를 통해 REST API 와 REST API secret 입력
     @Autowired
     public VerifyController(ParticipantService participantService, ChallengeService challengeService) {
         this.iamportClient = new IamportClient("...", "...");
@@ -43,17 +43,20 @@ public class VerifyController {
     }
 
 
+    //iamport를 이용하여 결제하기를 버튼을 눌렀을때 작동
     @PostMapping("/verifyIamport/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable String imp_uid, HttpServletRequest request) throws IamportResponseException, IOException {
         log.info("paymentByImpUid 진입");
         IamportResponse<Payment> paymentIamportResponse = iamportClient.paymentByImpUid(imp_uid);
         Payment payment = paymentIamportResponse.getResponse();
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(false); //로그인이 된 사용자가 세션을 사용하고 있으므로 false 세팅을 해준것임
         session.setAttribute("payment",payment);
-        session.setMaxInactiveInterval(60);
+        session.setMaxInactiveInterval(60); //60초동안 세션을 유지하고 있겠다는 뜻임
         return paymentIamportResponse;
     }
 
+
+    //DB에 값을 넣기 위한 작업
     @PostMapping("/challenge/{id}/payment")
     public ResponseEntity<?> savePayment(@PathVariable Long id, HttpServletRequest request, @RequestBody PaymentReqDTO paymentReqDTO) throws IamportResponseException, IOException {
 
@@ -63,6 +66,7 @@ public class VerifyController {
 
         CancelData cancelData = new CancelData(paymentReqDTO.getImp_uid(), true);
 
+        //-----------------로그인 처리 여부와 관련된 메소드이므로 결제와는 무관한 부분
         if(session == null) {
             iamportClient.cancelPaymentByImpUid(cancelData);
             response.put("response","로그인을 해야합니다.");
@@ -79,20 +83,27 @@ public class VerifyController {
 
         //챌린지 찾아오기
         Challenge findChallenge = challengeService.findOne(id);
+        //--------여기까지는 결제와 무관한 개인적인 로직입니다.-----------------------
+
+
 
         //verifyIamport에서 세션을 만들어서 여기서 검증한 후 없애줘야함
-        //여긴 결제승인을 한곳이 아니므로 잘못된 결제먼저해달라고하면됨
+        //여긴 결제승인을 제대로 수행된 것이 아닐때 작동한다.
         Payment payment = (Payment) session.getAttribute("payment");
         if(payment == null) {
             response.put("response","잘못된 접근입니다.");
             return ResponseEntity.ok(response);
         }
 
+        //성공적으로 작동하면 try 안에 각 프로젝트의 payment table 에 알맞게 값을 넣어주는 로직을 작성하면된다.
         try {
             participantService.savePayment(paymentReqDTO.getImp_uid() ,paymentReqDTO.getP_price(), loginMember, findChallenge);
             response.put("response","1");
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }
+        //Iamport 의 경우 오류가 발생해도 결제가 이루어지므로(돈이 빠져나간다는 소리) cancelPaymentByImpUid 함수를 이용해 꼭 환불이 될 수 있도록 해야한다.
+        //cancelData 는 위에서 imp_uid 를 이용하여 불러왔으므로 그냥 함수의 매개변수값으로 바로 넣어주면 된다.
+        catch (Exception e) {
             iamportClient.cancelPaymentByImpUid(cancelData);
             response.put("response","잘못된 접근입니다");
             return ResponseEntity.ok(response);
