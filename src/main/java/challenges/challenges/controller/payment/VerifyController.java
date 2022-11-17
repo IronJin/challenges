@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 @Slf4j
@@ -65,6 +66,7 @@ public class VerifyController {
 
         CancelData cancelData = new CancelData(paymentReqDTO.getImp_uid(), true);
 
+
         //-----------------로그인 처리 여부와 관련된 메소드이므로 결제와는 무관한 부분
         if(session == null) {
             iamportClient.cancelPaymentByImpUid(cancelData);
@@ -91,6 +93,12 @@ public class VerifyController {
         Payment payment = (Payment) session.getAttribute("payment");
         if(payment == null) {
             response.put("response","잘못된 접근입니다.");
+            return ResponseEntity.ok(response);
+        }
+
+        if(payment.getAmount().equals(paymentReqDTO.getP_price())) {
+            iamportClient.cancelPaymentByImpUid(cancelData);
+            response.put("response", "잘못된 접근입니다.");
             return ResponseEntity.ok(response);
         }
 
