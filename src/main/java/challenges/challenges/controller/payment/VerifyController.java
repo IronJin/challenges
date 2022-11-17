@@ -51,7 +51,6 @@ public class VerifyController {
         Payment payment = paymentIamportResponse.getResponse();
         HttpSession session = request.getSession(false); //로그인이 된 사용자가 세션을 사용하고 있으므로 false 세팅을 해준것임
         session.setAttribute("payment",payment);
-        session.setMaxInactiveInterval(60); //60초동안 세션을 유지하고 있겠다는 뜻임
         return paymentIamportResponse;
     }
 
